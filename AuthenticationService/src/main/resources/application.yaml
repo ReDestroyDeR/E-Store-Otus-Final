@@ -23,13 +23,7 @@ auth:
     bcrypt:
       strength: 10
 
-springfox:
-  documentation:
-    swagger-ui:
-      base-url: "/documentation"
-
-external:
-  business:
-    url: ${EXTERNAL_BUSINESS_URL}
-    endpoints:
-      create: "/"
+kafka:
+  bootstrapServers: "localhost:9092"
+  applicationId: "billing-service"
+  schemaRegistryUrl: "http://localhost:8081"

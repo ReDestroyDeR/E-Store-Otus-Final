@@ -26,13 +26,18 @@
       "description": "Salt length."
     },
     {
-      "name": "external.business.url",
+      "name": "kafka.bootstrapServers",
       "type": "java.lang.String",
-      "description": "External business service URL."
+      "description": "IPs of Kafka Brokers."
     },
     {
-      "name": "external.business.endpoints.create",
+      "name": "kafka.applicationId",
       "type": "java.lang.String",
-      "description": "User creation endpoint."
+      "description": "Kafka Streams application id."
+    },
+    {
+      "name": "kafka.schemaRegistryUrl",
+      "type": "java.lang.String",
+      "description": "Schema registry connection url."
     }
   ] }

@@ -23,13 +23,7 @@ auth:
     bcrypt:
       strength: ${AUTH_SECURITY_BCRYPT_STRENGTH:10}
 
-springfox:
-  documentation:
-    swagger-ui:
-      base-url: ${SPRINGFOX_DOCUMENTATION_SWAGGER-UI_BASE-URL:/documentation}
-
-external:
-  business:
-    url: ${EXTERNAL_BUSINESS_URL}
-    endpoints:
-      create: ${EXTERNAL_BUSINESS_ENDPOINTS_CREATE}
+kafka:
+  bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS}
+  applicationId: ${KAFKA_APPLICATION_ID}
+  schemaRegistryUrl: ${KAFKA_SCHEMA_REGISTRY_URL}

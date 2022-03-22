@@ -1,0 +1,34 @@
+{
+  "type": "record",
+  "name": "ValueUserManipulation",
+  "namespace": "final.avro",
+  "fields": [
+    {
+      "name": "event",
+      "type": {
+        "type": "enum",
+        "name": "ManipulationType",
+        "symbols": [
+          "CREATED",
+          "UPDATED_EMAIL",
+          "UPDATED_USERNAME",
+          "DELETED"
+        ]
+      }
+    },
+    {
+      "name": "previousEmail",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "previousUsername",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "username",
+      "type": "string"
+    }
+  ]
+}
