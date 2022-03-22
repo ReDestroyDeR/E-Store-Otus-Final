@@ -47,4 +47,8 @@ public class StringUtil {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
+
+    public static String generateRandomEmail(int length) {
+        return generateRandomString(length) + "@example.com";
+    }
 }

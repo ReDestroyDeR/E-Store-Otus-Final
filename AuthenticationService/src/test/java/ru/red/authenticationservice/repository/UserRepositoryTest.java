@@ -39,7 +39,7 @@ class UserRepositoryTest {
 
     private UsersRecord createTestUsersRecord() {
         UsersRecord record = new UsersRecord();
-        record.setUsername("Test username");
+        record.setEmail("test@example.com");
         record.setSalt("Test salt");
         record.setPassword("Test password");
         return record;

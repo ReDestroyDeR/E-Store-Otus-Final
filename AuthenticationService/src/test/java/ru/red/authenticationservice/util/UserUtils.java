@@ -4,12 +4,13 @@ import ru.red.authenticationservice.jooq.tables.records.UsersRecord;
 
 import java.util.Random;
 
+import static ru.red.authenticationservice.util.StringUtil.generateRandomEmail;
 import static ru.red.authenticationservice.util.StringUtil.generateRandomString;
 
 public class UserUtils {
     public static UsersRecord createRandomUser() {
         UsersRecord record = new UsersRecord();
-        record.setUsername(generateRandomString(10));
+        record.setEmail(generateRandomEmail(10));
         record.setPassword(generateRandomString(10));
         return record;
     }
