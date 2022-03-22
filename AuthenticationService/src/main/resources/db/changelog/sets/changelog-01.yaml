@@ -14,11 +14,11 @@ databaseChangeLog:
                     primaryKey: true
                     primaryKeyName: pk-users
               - column:
-                  name: username
+                  name: email
                   type: Varchar(64)
                   constraints:
                     unique: true
-                    uniqueConstraintName: uq-username
+                    uniqueConstraintName: uq-email
               - column:
                   name: salt
                   type: Varchar(64)

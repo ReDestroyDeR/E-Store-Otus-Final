@@ -53,16 +53,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UsersRecord> registerUser(UserDetachedDTO userDetachedDTO) {
-        if (userDetachedDTO.getUsername() == null || userDetachedDTO.getUsername().length() < 3) {
-            return Mono.error(new BadRequestException("Username length must be >= 3 characters"));
+        if (userDetachedDTO.getEmail() == null || userDetachedDTO.getEmail().length() < 3) {
+            return Mono.error(new BadRequestException("Email length must be >= 3 characters"));
         }
 
         UsersRecord usersRecord = userMapper.userDetachedDtoToUsersRecord(userDetachedDTO);
         updateSaltPasswordPair(userDetachedDTO.getPassword(), usersRecord);
         return repository.createUser(usersRecord)
                 .onErrorMap(BadRequestException::new)
-                .doOnSuccess(s -> log.info("Account created [{}] {}", s.getId(), usersRecord.getUsername()))
-                .doOnError(e -> log.info("Account creation failed for {} {}", usersRecord.getUsername(), e.getMessage()))
+                .doOnSuccess(s -> log.info("Account created [{}] {}", s.getId(), usersRecord.getEmail()))
+                .doOnError(e -> log.info("Account creation failed for {} {}", usersRecord.getEmail(), e.getMessage()))
                 .flatMap(usersRec -> businessServiceWebClient.post()
                                 .uri(businessCreateEndpoint)
                                 .bodyValue(userMapper.usersRecordToUserIdentityDTO(usersRec))
@@ -72,18 +72,18 @@ public class UserServiceImpl implements UserService {
                                 .doOnSuccess(s ->
                                         log.info("Successfully created account [{}] {} in Business service",
                                                 usersRec.getId(),
-                                                usersRecord.getUsername()))
+                                                usersRecord.getEmail()))
                                 .retry(3)
                                 .timeout(Duration.ofSeconds(30))
                                 .publishOn(Schedulers.boundedElastic())
                                 .onErrorMap(e -> {
                                     log.info("Failed creating account [{}] {} in Business service {}",
                                             usersRec.getId(),
-                                            usersRecord.getUsername(),
+                                            usersRecord.getEmail(),
                                             e.getMessage());
                                     delete(userDetachedDTO).subscribe();
                                     return new ExternalServiceException(
-                                            "Can't reach external service did rollback for %s".formatted(usersRecord.getUsername()),
+                                            "Can't reach external service did rollback for %s".formatted(usersRecord.getEmail()),
                                             e);
                                 })
                                 .thenReturn(usersRec)
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<String> login(UserDetachedDTO userDetachedDTO) {
         // TODO: Add refresh token functionality
-        return repository.getUser(userDetachedDTO.getUsername())
+        return repository.getUser(userDetachedDTO.getEmail())
                 .switchIfEmpty(Mono.error(NotFoundException::new))
                 .flatMap(user -> passwordEncoder.matches(
                         userDetachedDTO.getPassword().concat(user.getSalt()),
@@ -104,43 +104,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<UsersRecord> updateUsername(String username, UserDetachedDTO dto) {
+    public Mono<UsersRecord> updateEmail(String email, UserDetachedDTO dto) {
         return validatePassword(dto)
                 .flatMap(user -> {
-                    user.setUsername(username);
+                    user.getEmail(email);
                     return repository.updateUser(user.getId(), user);
                 })
                 .onErrorMap(e -> e.getClass().equals(DataAccessException.class) ? new BadRequestException(e) : e)
                 .doOnSuccess(s -> log.info(
-                        "Successfully updated username for user [{}] {} -> {}",
+                        "Successfully updated email for user [{}] {} -> {}",
                         s.getId(),
-                        dto.getUsername(),
-                        s.getUsername()))
+                        dto.getEmail(),
+                        s.getEmail()))
                 .doOnError(e -> log.info(
-                        "Failed updating username for user {} -> {} {}",
-                        dto.getUsername(),
-                        username,
+                        "Failed updating email for user {} -> {} {}",
+                        dto.getEmail(),
+                        email,
                         e.getMessage()
                 ))
                 .flatMap(user -> businessServiceWebClient.patch()
                         .uri(uriBuilder -> uriBuilder
-                                .path(businessCreateEndpoint + "/change-username")
-                                .queryParam("previous_username", dto.getUsername())
-                                .queryParam("new_username", username)
+                                .path(businessCreateEndpoint + "/change-email")
+                                .queryParam("previous_email", dto.getEmail())
+                                .queryParam("new_email", email)
                                 .build())
                         .exchangeToMono(ClientResponse::releaseBody)
                         .onErrorMap(ExternalServiceException::new)
                         .retry(3)
                         .timeout(Duration.ofSeconds(30))
                         .doOnSuccess(s -> log.info(
-                                "Successfully updated username for user {} -> {} on external service",
-                                dto.getUsername(),
-                                username
+                                "Successfully updated email for user {} -> {} on external service",
+                                dto.getEmail(),
+                                email
                         ))
                         .doOnError(e -> log.info(
-                                "Failed updating username for user {} -> {} on external service {}",
-                                dto.getUsername(),
-                                username,
+                                "Failed updating email for user {} -> {} on external service {}",
+                                dto.getEmail(),
+                                email,
                                 e.getMessage()
                         ))
                         .thenReturn(user));
@@ -156,11 +156,11 @@ public class UserServiceImpl implements UserService {
                 .doOnSuccess(s -> log.info(
                         "Successfully updated password for user [{}] {}",
                         s.getId(),
-                        s.getUsername()
+                        s.getEmail()
                 ))
                 .doOnError(e -> log.info(
                         "Failed updating password for user {} {}",
-                        dto.getUsername(),
+                        dto.getEmail(),
                         e.getMessage()
                 ));
     }
@@ -171,20 +171,20 @@ public class UserServiceImpl implements UserService {
                 .flatMap(user -> repository.deleteUser(user.getId()))
                 .flatMap(i -> i == 1
                         ? Mono.just(i)
-                        : Mono.error(new NotFoundException("Can't delete user " + userDetachedDTO.getUsername())))
-                .doOnSuccess(s -> log.info("Successfully deleted user {}", userDetachedDTO.getUsername()))
-                .doOnError(e -> log.info("Failed deleting user {} {}", userDetachedDTO.getUsername(), e.getMessage()))
+                        : Mono.error(new NotFoundException("Can't delete user " + userDetachedDTO.getEmail())))
+                .doOnSuccess(s -> log.info("Successfully deleted user {}", userDetachedDTO.getEmail()))
+                .doOnError(e -> log.info("Failed deleting user {} {}", userDetachedDTO.getEmail(), e.getMessage()))
                 .then(businessServiceWebClient.delete()
                         .uri(uriBuilder -> uriBuilder // We expect Business Service to follow API Contract
                                 .path(businessCreateEndpoint)
-                                .queryParam("username", userDetachedDTO.getUsername())
+                                .queryParam("email", userDetachedDTO.getEmail())
                                 .build())
                         .exchangeToMono(ClientResponse::releaseBody)
                         .onErrorMap(ExternalServiceException::new))
                 .retry(3)
                 .timeout(Duration.ofSeconds(30))
                 .doOnSuccess(empty -> log.info("Deleted user {} on business service",
-                        userDetachedDTO.getUsername()))
+                        userDetachedDTO.getEmail()))
                 .doOnError(e -> log.info("Failed deleting user on external business service {}", e.getMessage()))
                 .then();
     }
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Mono<UsersRecord> validatePassword(UserDetachedDTO userDetachedDTO) {
-        return repository.getUser(userDetachedDTO.getUsername())
+        return repository.getUser(userDetachedDTO.getEmail())
                 .switchIfEmpty(Mono.error(NotFoundException::new))
                 .flatMap(user -> passwordEncoder.matches(
                                 userDetachedDTO.getPassword() + user.getSalt(),

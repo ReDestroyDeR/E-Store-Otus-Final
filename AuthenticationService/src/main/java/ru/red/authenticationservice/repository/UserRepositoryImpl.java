@@ -31,11 +31,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Mono<UsersRecord> getUser(String username) {
+    public Mono<UsersRecord> getUser(String email) {
         return Mono.create(sink -> {
             try {
                 sink.success(jooq.selectFrom(Users.USERS)
-                        .where(Users.USERS.USERNAME.eq(username))
+                        .where(Users.USERS.EMAIL.eq(email))
                         .fetchOne());
             } catch (Exception e) {
                 sink.error(e);

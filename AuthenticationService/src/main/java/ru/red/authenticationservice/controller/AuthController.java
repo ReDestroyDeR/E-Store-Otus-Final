@@ -48,17 +48,17 @@ public class AuthController {
      *
      * @param userDetachedDTO user credentials
      * @return 200 {@link Void} User has been created<br>
-     * 400 {@link BadRequestException} Username is already occupied
+     * 400 {@link BadRequestException} Email is already occupied
      */
     @PostMapping("register")
     public Mono<Void> register(@RequestBody UserDetachedDTO userDetachedDTO) {
         return userService.registerUser(userDetachedDTO).then();
     }
 
-    @PostMapping("change-username")
-    public Mono<Void> changeUsername(@RequestParam("username") String username,
-                                     @RequestBody UserDetachedDTO userDetachedDTO) {
-        return userService.updateUsername(username, userDetachedDTO).then();
+    @PostMapping("change-email")
+    public Mono<Void> changeEmail(@RequestParam("email") String email,
+                                  @RequestBody UserDetachedDTO userDetachedDTO) {
+        return userService.updateEmail(email, userDetachedDTO).then();
     }
 
     @PostMapping("change-password")

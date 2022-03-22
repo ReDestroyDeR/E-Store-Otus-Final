@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "ValueUserManipulation",
-  "namespace": "final.avro",
+  "namespace": "ru.red.avro",
   "fields": [
     {
       "name": "event",
@@ -11,7 +11,6 @@
         "symbols": [
           "CREATED",
           "UPDATED_EMAIL",
-          "UPDATED_USERNAME",
           "DELETED"
         ]
       }
@@ -20,15 +19,6 @@
       "name": "previousEmail",
       "type": "string",
       "default": ""
-    },
-    {
-      "name": "previousUsername",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "name": "username",
-      "type": "string"
     }
   ]
 }

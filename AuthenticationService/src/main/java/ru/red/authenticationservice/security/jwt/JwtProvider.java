@@ -62,7 +62,7 @@ public class JwtProvider {
      */
     public String createJwt(UsersRecord usersRecord) {
         var id = usersRecord.getId();
-        var username = usersRecord.getUsername();
+        var username = usersRecord.getEmail();
         log.info("Creating JWT for [{}] {}", id, username);
         LocalDateTime now = LocalDateTime.now();
         return Jwts.builder()

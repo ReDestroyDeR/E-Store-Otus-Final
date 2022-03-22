@@ -24,16 +24,16 @@ public interface UserService {
     Mono<String> login(UserDetachedDTO userDetachedDTO);
 
     /**
-     * Username Update function
+     * Email Update function
      *
-     * @param dto User Credentials
-     * @param username New username
+     * @param dto   User Credentials
+     * @param email New email
      * @return Persisted {@link UsersRecord}
      */
-    Mono<UsersRecord> updateUsername(String username, UserDetachedDTO dto);
+    Mono<UsersRecord> updateEmail(String email, UserDetachedDTO dto);
 
     /**
-     * Username Update function
+     * Email Update function
      *
      * @param dto User Credentials
      * @param password New password
