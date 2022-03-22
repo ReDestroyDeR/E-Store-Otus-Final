@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Daniil Shreyder
+      changes:
+        - createTable:
+            tableName: "users"
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk-users
+              - column:
+                  name: username
+                  type: Varchar(64)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: uq-username
+              - column:
+                  name: salt
+                  type: Varchar(64)
+              - column:
+                  name: password
+                  type: Varchar(128)
+

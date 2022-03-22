@@ -1,0 +1,97 @@
+# Default values for AuthenticationService.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: redestroyder/authorization-service
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+secrets:
+  jwt:
+    # Sample b64 encoded keys
+    private_key_b64: "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRQ3pFcm5BVmZINU9tN0EKY1pCRlBqalg0U3lwZ2J3bGNSOEtqWFJiNmUrL0IzZmM0ejlQUXZuVTIxT3lpcXRDUmpWekN6blVmem5ONHBycwp6eDR3R2Fod3lBc01HTVprS2tDQ3dZdFNPY2M3ajlLZlV0bnFpUWdJbFg5RFZ2V2RieU8vQmhXdDN5WEFwNk5rCi9jcDdqSm1vaU56QUhFdVd2QklST2xkeTEwRVk2djZac2lRNUxPeGlCTVJMTXNCcVhlMm5ZeG5yd0sxM3MzanoKNmlNcXg2dWJkVnhTb1BKQkovTHlieXZhY2M4OXVtR0xmWVE5V0J5T1cwVTJnejBTZE5GYS9lWkhBbVQ5ZitVOQoyRENaRmJBZExoaVZBMUlLWVR5QithWFJDQnFTL3lGSSs4c0xvT2pjc09wMVJHaXA4U3NSdWJYU1lIbVRpaHBBCmxmejNEMjlwQWdNQkFBRUNnZ0VCQUpSME1xL2owRTFZaHRaZGowZ0lOR0dyMkRYU1N1TVRhN040MzMwUGJHVUcKMFBTN0pCSVdxVDB3Y3F1eVVCWUtWR2RDYURmbEhVdTB6OUVBUjd1Q21lU2R3cUxOcXpNQTRDaEdRYlR5RjF3bQplR3NDNll1SS9MTDVGTjhEcVcxUjVPV0pLdEhSQytBeVdiL3dzanRJclY1TjBBd25xUGFXaGJmb2tQU3d4TlBkCklmdVJNZk5kMUVMNkpCQW90V0ttT1d4RkhYeG5GSUMxQ0I3MWh1Ykx6c2JTdUNmbFFaelFjVXJKVE1zam5ERVoKVGZuVEF1OGw4Vm5Oazg0MjFTNVRranN4VDk5NXhPYVpYaDdLTTdOTjAwclJ6T09COStXNjQ5ODVTUTk4VkVzNwpobFpPN0JIUnJtbHFNbGNqdjBJSXg1OENWZmhZcFZORWh0N0JRUmw0Y3EwQ2dZRUEzR3BHRVJiYzdEZkQyY3VWCkJkRFV5WnBwUG9YSUJtTzR6UklpcC9CUUdxTktaRllQT3hDT2hUdE45TGMwQ2RoejUzc2N5bll5ZG95TWNSWnMKcVJPeHBONXo2MzBidjVJQVNhbzNCT1hZbk50SmZLc1pjRUU4bUVJYkNnSkxOY3BjMC9INnJoWEd0dEdiNHBlcwpSR1YvQS9hOWxCSjRnVUZMWlpLS051MUVoM01DZ1lFQXovdkxJbEZWU3pkcGNuMmlMZFlEcGhoOVA1UlZWS1VqCnZhUVgzY2UwMWl0a2tRbjhsQUdOR040cUtrbE9kckNwcHROMmhoM0kyd0NtTG1hY3Z4V1k1RUp2T3VpZFVyclMKUTdSWTRqNmVHbzJURHJ4TnNQMjZmWEVzZUlNWjdQaGs3VzVHWmpQbEFONndXVkF1ZkZ4K3ZDdTNodnNQaEtlcgo4SzNwMlZEVjNyTUNnWUJ6NXpaYytpYkYyRFVXcStUN0grc2s4QnR6a3lteG9uS2s4MnBoNFE1ZVU0dGs0NVF5CnZPd1V4ekNoQkUxSytCVktuZ1J2dW1PaXp4bHl4aFh4ZXJlcE9JakFSaE4zVXpEdmk2Qk81UVpZeFQ4SlhYZU0KL2VEOU41VzhWNlJ3N3E2TmpPc0M2OVNJZ2dSMHpNajdWbHZLRzg5b3M2WEdZaTFoaGdORUN0UkVYUUtCZ0VNRAo4Zjg3ejh6dHJPZDhQYzZoSUFuYjZEZWRWeVZ3RktVZGc2Y3RtMEpMTnh0WTZXN1RWU0NITFhUMHEvaW9rZkcwClA0T1ZnMHUxMk5Zb3NDY09FWGF6UlYzbzZCQnBMQ2t1cWxrMExnT0dUTFU1elpyVEZzMG1zMXFkZTdRVWtZakQKdUtGajVVMHpkQVZEUmNkQ2tuK1ZZb3gyeHhoS1lxZXBraWs0MThEckFvR0JBTG1lT1VpVGMrazVzRVVQNVZXRQpGWkFMeW9tWS9RaWdTUGRweGE4Y2JmL0drNTJueEdJcDVJYzdKb2hUV29aTWVVZzQxS2g5N0xucU9UejdKN2RDCnNDM0ppYXZBbHVBWStwVm83bGt4OFYvWmY1WVdLS2hucWRnV1JiUmxSdzJlMU9kOWRHbkZyK2dJQlhLMjBFakgKUG5PSUtoTG9NNkVhM0JTSkZhbDZBYTRFCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K"
+    public_key_b64: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFzeEs1d0ZYeCtUcHV3SEdRUlQ0NAoxK0VzcVlHOEpYRWZDbzEwVytudnZ3ZDMzT00vVDBMNTFOdFRzb3FyUWtZMWN3czUxSDg1emVLYTdNOGVNQm1vCmNNZ0xEQmpHWkNwQWdzR0xVam5ITzQvU24xTFo2b2tJQ0pWL1ExYjFuVzhqdndZVnJkOGx3S2VqWlAzS2U0eVoKcUlqY3dCeExscndTRVRwWGN0ZEJHT3IrbWJJa09TenNZZ1RFU3pMQWFsM3RwMk1aNjhDdGQ3TjQ4K29qS3NlcgptM1ZjVXFEeVFTZnk4bThyMm5IUFBicGhpMzJFUFZnY2psdEZOb005RW5UUld2M21Sd0prL1gvbFBkZ3dtUld3CkhTNFlsUU5TQ21FOGdmbWwwUWdha3Y4aFNQdkxDNkRvM0xEcWRVUm9xZkVyRWJtMTBtQjVrNG9hUUpYODl3OXYKYVFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=="
+  postgres:
+    username: postgres
+    password: postgres
+
+config:
+  postgres:
+    uri: postgres.svc.cluster.local
+    port: "5432"
+  jwt:
+    claims_exp_minutes: "30"
+  auth:
+    salt_length: "32"
+    bcrypt_strength: "10"
+  swagger:
+    base_url: /documentation
+  external:
+    business:
+      url: business.svc.cluster.local
+      endpoints:
+        create: /create
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+gateway:
+  hosts:
+    - arch.homework
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

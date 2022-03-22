@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    url: jdbc:postgresql://${POSTGRES_URI}:${POSTGRES_PORT:5432}/authentication
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+
+jwt:
+  claims:
+      exp:
+        minutes: ${JWT_CLAIMS_EXP_MINUTES:30}
+  keys:
+    private: ${JWT_PRIVATE_KEY}
+    public: ${JWT_PUBLIC_KEY}
+
+auth:
+  security:
+    salt:
+      length: ${AUTH_SECURITY_SALT:32} # Max = 64 (check liquibase change-set 1)
+    bcrypt:
+      strength: ${AUTH_SECURITY_BCRYPT_STRENGTH:10}
+
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: ${SPRINGFOX_DOCUMENTATION_SWAGGER-UI_BASE-URL:/documentation}
+
+external:
+  business:
+    url: ${EXTERNAL_BUSINESS_URL}
+    endpoints:
+      create: ${EXTERNAL_BUSINESS_ENDPOINTS_CREATE}

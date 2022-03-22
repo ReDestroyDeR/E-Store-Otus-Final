@@ -1,0 +1,38 @@
+{
+  "properties": [
+    {
+      "name": "jwt.keys.private",
+      "type": "java.lang.String",
+      "description": "Private key used to sign JWT."
+    },
+    {
+      "name": "jwt.keys.public",
+      "type": "java.lang.String",
+      "description": "Public key used to validate JWT."
+    },
+    {
+      "name": "jwt.claims.exp.minutes",
+      "type": "java.lang.Long",
+      "description": "Jwt expiration delta from iss."
+    },
+    {
+      "name": "auth.security.bcrypt.strength",
+      "type": "java.lang.Integer",
+      "description": "Bcrypt password encryption strength."
+    },
+    {
+      "name": "auth.security.salt.length",
+      "type": "java.lang.Integer",
+      "description": "Salt length."
+    },
+    {
+      "name": "external.business.url",
+      "type": "java.lang.String",
+      "description": "External business service URL."
+    },
+    {
+      "name": "external.business.endpoints.create",
+      "type": "java.lang.String",
+      "description": "User creation endpoint."
+    }
+  ] }

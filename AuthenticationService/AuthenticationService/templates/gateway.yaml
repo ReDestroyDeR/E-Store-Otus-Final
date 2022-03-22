@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ include "AuthenticationService.fullname" . }}
+spec:
+  selector:
+    {{- include "AuthenticationService.labels" . | nindent 4 }}
+  servers:
+    - port:
+        targetPort: {{ .Values.service.targetPort }}
+        number: {{ .Values.service.port }}
+        name: http
+        protocol: HTTP
+      hosts:
+        {{ range $k, $host := .Values.gateway.hosts }}
+        {{ $host | nindent 8 }}
+        {{ end }}
