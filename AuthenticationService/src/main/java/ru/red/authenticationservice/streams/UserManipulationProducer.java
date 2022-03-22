@@ -9,22 +9,16 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import ru.red.authenticationservice.dto.UserIdentityDTO;
-import ru.red.authenticationservice.service.UserService;
 import ru.red.avro.ManipulationType;
 import ru.red.avro.ValueUserManipulation;
 
-@SuppressWarnings("ClassCanBeRecord")
 @Component
 public class UserManipulationProducer {
     private final Producer<String, ValueUserManipulation> producer;
 
-    private final UserService userService;
-
     @Autowired
-    public UserManipulationProducer(UserService userService,
-                                    @Qualifier("user-manipulation-producer-factory")
+    public UserManipulationProducer(@Qualifier("user-manipulation-producer-factory")
                                             ProducerFactory<String, ValueUserManipulation> producerFactory) {
-        this.userService = userService;
         this.producer = producerFactory.createProducer();
     }
 

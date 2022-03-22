@@ -61,7 +61,7 @@ public class UserMapperImpl implements UserMapper {
     public UsersRecord userDTOToUsersRecord(UserDTO dto) {
         UsersRecord usersRecord = new UsersRecord();
         usersRecord.setId(dto.getId());
-        usersRecord.setUsername(dto.getEmail());
+        usersRecord.setEmail(dto.getEmail());
         usersRecord.setPassword(dto.getPassword());
         return usersRecord;
     }
@@ -89,7 +89,7 @@ public class UserMapperImpl implements UserMapper {
     @Override
     public UsersRecord userDetachedDtoToUsersRecord(UserDetachedDTO dto) {
         UsersRecord usersRecord = new UsersRecord();
-        usersRecord.setUsername(dto.getEmail());
+        usersRecord.setEmail(dto.getEmail());
         usersRecord.setPassword(dto.getPassword());
         return usersRecord;
     }
