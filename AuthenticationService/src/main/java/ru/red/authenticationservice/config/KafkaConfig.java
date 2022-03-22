@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import ru.red.avro.ValueUserManipulation;
 
@@ -17,7 +18,7 @@ import java.util.HashMap;
 @Configuration
 public class KafkaConfig {
     @Bean(name = "user-manipulation-producer-factory")
-    public ProducerFactory<String, ValueUserManipulation> kafkaStreamsConfiguration(
+    public ProducerFactory<String, ValueUserManipulation> kafkaProducerFactory(
             @Value("${kafka.bootstrapServers}") String bootstrapServers,
             @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
 
@@ -29,6 +30,13 @@ public class KafkaConfig {
         properties.put("schema.registry.url", schemaRegistryUrl);
 
         return new DefaultKafkaProducerFactory<>(properties);
+    }
+
+    @Bean
+    public KafkaTemplate<String, ValueUserManipulation> kafkaTemplate(
+            @Value("${kafka.bootstrapServers}") String bootstrapServers,
+            @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
+        return new KafkaTemplate<>(kafkaProducerFactory(bootstrapServers, schemaRegistryUrl));
     }
 }
 

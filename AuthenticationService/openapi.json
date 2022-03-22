@@ -1,0 +1,408 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Authentication Service API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local server url"
+    },
+    {
+      "url": "http://arch.homework",
+      "description": "Kubernetes server url"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetachedDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "example": ""
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:36:03.528+00:00",
+                    "path": "/register",
+                    "status": 400,
+                    "error": "Bad Request",
+                    "requestId": "050585f7-15"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "summary": "Login into existing user account",
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetachedDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhdXRoLmFyY2guaG9tZXdvcmsiLCJzdWIiOiJleGFtcGxlQGV4YW1wbGUuY29tIiwiaWF0IjoxNjQ3OTg3ODI4LCJleHAiOjE2NDc5ODk2Mjh9.PlZRIGNK0QTHUIfH9iBtUkWwChdQ9kn7l7N51cBYHTjLcDMPKeJ2UZiMevSXqkLNRrxyHotHVyqLUJfrxM6-STWYy4BSw5fpsCDM9-FyLUKVbtb28EQhZ6QCP7Bi7lSOFWwDutIZG51_QvvK-0M0Fp_6zoqkGp7ACyjf5PPTKKGkhjGzo-zEkAYFKjiPKedu6HlTa1Fj0frn6fxdw_ofGDII5K8liAoPabF0yKoxOsfpj-vejY3qrKJM7rcBjgkmvaYFoWzWWFCUopa7k_fSK8x6HuJLeyZB_H9ryS31Jj5FgSpGutzP3yGTS94CBFJgvTL9dIwb4ZN5KOT70-0X9Q"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:30:09.912+00:00",
+                    "path": "/login",
+                    "status": 403,
+                    "error": "Forbidden",
+                    "requestId": "050585f7-8"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:33:10.289+00:00",
+                    "path": "/login",
+                    "status": 404,
+                    "error": "Not Found",
+                    "requestId": "050585f7-11"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/change-password": {
+      "summary": "Change user password",
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetachedDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "example": ""
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:30:09.912+00:00",
+                    "path": "/change-password",
+                    "status": 403,
+                    "error": "Forbidden",
+                    "requestId": "050585f7-8"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:33:10.289+00:00",
+                    "path": "/login",
+                    "status": 404,
+                    "error": "Not Found",
+                    "requestId": "050585f7-11"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/change-email": {
+      "summary": "Change user email",
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "changeEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetachedDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "example": ""
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:30:09.912+00:00",
+                    "path": "/change-email",
+                    "status": 403,
+                    "error": "Forbidden",
+                    "requestId": "050585f7-8"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:33:10.289+00:00",
+                    "path": "/change-email",
+                    "status": 404,
+                    "error": "Not Found",
+                    "requestId": "050585f7-11"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete": {
+      "summary": "Delete user",
+      "delete": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDetachedDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:37:35.525+00:00",
+                    "path": "/delete",
+                    "status": 403,
+                    "error": "Forbidden",
+                    "requestId": "050585f7-22"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "timestamp": "2022-03-22T19:38:11.219+00:00",
+                    "path": "/delete",
+                    "status": 404,
+                    "error": "Not Found",
+                    "requestId": "050585f7-23"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/jwks.json": {
+      "summary": "Get JWKs",
+      "get": {
+        "tags": [
+          "well-known-controller"
+        ],
+        "operationId": "publicKey",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwksDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserDetachedDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "email": "example@example.com",
+          "password": "password"
+        }
+      },
+      "JwksDto": {
+        "type": "array",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object"
+          }
+        },
+        "example": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "e": "AQAB",
+              "use": "sig",
+              "kid": "1332bd1dc7cf036ce3e30a2e3bd94cc3",
+              "alg": "RS256",
+              "n": "AMF6FLh6qSFTMwF5c_nyKRJ0UY3gnwFkr1Egys2V_hUxHOEjkCvFsnp_YeAdD-TBMcgxP2c_3zGhI_JK28m1OAvhcf12c5q-wdZXaltmp5P2m-q8Kzr1Z3Cp49Pvw1je8HBEF0RWwnDiclPFTwnMfkfXG7SBUEdsqFv_cYerQEARTPBfSlyrmFZ7orLBC5PgLzaFEePtIY6bxeMVU6WZTGtz92YcCMe_56vm4kxURV8umrnEEVaedx2Kd0z-wAm4D2G4yNKHOeIb94K_E9tdgA6r5IdJMsANyU4lF9Cbre1y16v4D2dFq2rIVyK_ZIkXSIRR6Mkhco_jWgl8J2fxR0M="
+            }
+          ]
+        }
+      }
+    }
+  }
+}
