@@ -64,8 +64,8 @@
       }
     },
     "/login": {
-      "summary": "Login into existing user account",
       "post": {
+        "summary": "Login into existing user account",
         "tags": [
           "auth-controller"
         ],
@@ -130,8 +130,8 @@
       }
     },
     "/change-password": {
-      "summary": "Change user password",
       "post": {
+        "summary": "Change user password",
         "tags": [
           "auth-controller"
         ],
@@ -205,8 +205,8 @@
       }
     },
     "/change-email": {
-      "summary": "Change user email",
       "post": {
+        "summary": "Change user email",
         "tags": [
           "auth-controller"
         ],
@@ -280,8 +280,8 @@
       }
     },
     "/delete": {
-      "summary": "Delete user",
       "delete": {
+        "summary": "Delete user",
         "tags": [
           "auth-controller"
         ],
@@ -342,8 +342,8 @@
       }
     },
     "/.well-known/jwks.json": {
-      "summary": "Get JWKs",
       "get": {
+        "summary": "Get JWKs",
         "tags": [
           "well-known-controller"
         ],
