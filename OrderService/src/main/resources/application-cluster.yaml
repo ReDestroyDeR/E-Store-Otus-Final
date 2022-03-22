@@ -1,0 +1,21 @@
+kafka:
+  bootstrapAddress: ${KAFKA_BOOTSTRAP_SERVERS}
+  schema:
+    registry:
+      url: ${KAFKA_SCHEMA_REGISTRY_URL}
+
+spring:
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DATABASE}
+      authentication-database: ${MONGO_DATABASE}
+      auto-index-creation: true
+
+service:
+  order:
+    idempotency:
+      ttl: ${SERVICE_ORDER_IDEMPOTENCY_TTL:5m}

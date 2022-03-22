@@ -1,0 +1,431 @@
+{
+  "info": {
+    "_postman_id": "cc75bda2-cb82-410b-b2a1-612562e74ef3",
+    "name": "Notification Service API",
+    "description": "Fetch API providing access to messages that were sent to target users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Returns all messages sent to given address",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    const array = pm.response.json()",
+              "    const orders = pm.environment.get(\"orders\")",
+              "    const steps = pm.environment.get(\"balance_steps\")",
+              "    pm.expect(array.length).eq(orders)",
+              "    const acknowledged = steps - orders < 0 ? steps : orders",
+              "    const not_acknowledged = steps - orders < 0 ? -(steps - orders) : 0",
+              "",
+              "    let returned_acknowledged = 0",
+              "    let returned_not_acknowledged = 0",
+              "",
+              "    array.forEach(notification => {",
+              "        if (notification.contents.includes(\"Вам не хватает:\")) {",
+              "            returned_not_acknowledged++",
+              "        } else {",
+              "            returned_acknowledged++",
+              "        }",
+              "        pm.collectionVariables.set(\"notification_id\", notification.id)",
+              "    })",
+              "",
+              "    pm.expect(returned_acknowledged).eq(acknowledged)",
+              "    pm.expect(returned_not_acknowledged).eq(not_acknowledged)",
+              "})",
+              "",
+              "pm.test(\"Can't find\", function() {",
+              "    pm.sendRequest( pm.collectionVariables.get(\"baseUrl\") + \"/email/doesntexist@idonotexist.trustme\", function (error, response) {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/email/:email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "email",
+            ":email"
+          ],
+          "variable": [
+            {
+              "key": "email",
+              "value": "{{email}}",
+              "description": "(Required) User Address"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing messages",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "john@example.com",
+                  "description": "(Required) User Address"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": \"622c92fb80edfc4865438ade\",\n    \"timestamp\": 1646767873728,\n    \"userAddress\": \"john@example.com\",\n    \"contents\": \"<html lang='ru'>...</html>\"\n  },\n  {\n    \"id\": \"622c32fb80fdf74891b885ad\",\n    \"timestamp\": 1646767873000,\n    \"userAddress\": \"john@example.com\",\n    \"contents\": \"<html lang='ru'>...</html>\"\n  },\n  {\n    \"id\": \"622c92fb80edfc4891c43852\",\n    \"timestamp\": 1646767800000,\n    \"userAddress\": \"john@example.com\",\n    \"contents\": \"<html lang='ru'>...</html>\"\n  }\n]"
+        },
+        {
+          "name": "Notification to such address doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "john@example.com",
+                  "description": "(Required) User Address"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns message by 24 digit hex ObjectID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.expect(pm.response.json().id).eq(pm.collectionVariables.get(\"notification_id\"))",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/id/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "id",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{notification_id}}",
+              "description": "(Required) ObjectID Hex"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing message",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6227af0651d9c14602d59d6a",
+                  "description": "(Required) ObjectID Hex"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": 1646767873728,\n  \"userAddress\": \"example@example.com\",\n  \"contents\": \"<html lang='ru'>...</html>\"\n}"
+        },
+        {
+          "name": "Notification with such ID doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6227af0651d9c14602d59d6a",
+                  "description": "(Required) ObjectID Hex"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns all messages with contents containing string",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.variables.set(\"contents\", \"Поздравляем с оформлением заказа!\")",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    if (pm.environment.get(\"orders\") == 0) {",
+              "        pm.expect(pm.response.code).eq(404)",
+              "        return",
+              "    }",
+              "",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    const array = pm.response.json()",
+              "    array.forEach(notification => {",
+              "        pm.expect(notification.contents).include(pm.variables.get(\"contents\"))",
+              "    })",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/contents/:contents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "contents",
+            ":contents"
+          ],
+          "variable": [
+            {
+              "key": "contents",
+              "value": "{{contents}}",
+              "description": "(Required) Search string"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing messages",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/contents/:contents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contents",
+                ":contents"
+              ],
+              "variable": [
+                {
+                  "key": "contents",
+                  "value": "Some String",
+                  "description": "(Required) Search string"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": \"622c92fb80edfc4891c43852\",\n    \"timestamp\": 1646767873728,\n    \"userAddress\": \"john@example.com\",\n    \"contents\": \"<html lang='ru'>...Some String...</html>\"\n  },\n  {\n    \"id\": \"622c32fb80fdf74891b885ad\",\n    \"timestamp\": 1646767873000,\n    \"userAddress\": \"susan@example.com\",\n    \"contents\": \"<html lang='ru'>...Some String...</html>\"\n  },\n  {\n    \"id\": \"622c94fb80edfc4865438ade\",\n    \"timestamp\": 1646767800000,\n    \"userAddress\": \"michael@example.com\",\n    \"contents\": \"<html lang='ru'>...Some String...</html>\"\n  }\n]"
+        },
+        {
+          "name": "Can't find notifications with contents containing target string",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/contents/:contents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contents",
+                ":contents"
+              ],
+              "variable": [
+                {
+                  "key": "contents",
+                  "value": "Some String",
+                  "description": "(Required) Search string"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://arch.homework/api/notifications",
+      "type": "string"
+    },
+    {
+      "key": "notification_id",
+      "value": ""
+    }
+  ]
+}

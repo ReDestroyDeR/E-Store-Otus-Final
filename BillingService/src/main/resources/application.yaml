@@ -1,0 +1,17 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/billing
+    name: billing
+    username: postgres
+    password: postgres
+
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/billing
+    user: postgres
+    password: postgres
+    change-log: classpath:db/changelog/changelog-master.yaml
+
+kafka:
+  bootstrapServers: "localhost:9092"
+  applicationId: "billing-service"
+  schemaRegistryUrl: "http://localhost:8081"

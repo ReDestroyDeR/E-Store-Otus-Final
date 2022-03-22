@@ -1,0 +1,13 @@
+primary:
+  initdb:
+    scripts:
+      init.sql: |
+        CREATE USER billing WITH PASSWORD 'billing'; 
+        CREATE DATABASE billing;
+        GRANT ALL PRIVILEGES ON DATABASE billing TO billing;
+
+  persistence:
+    size: 3Gi
+auth:
+  username: "postgres"
+  password: "postgres"

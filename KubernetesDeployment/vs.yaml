@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: stream-processing-vs
+  namespace: stream-processing
+spec:
+  hosts:
+    - arch.homework
+  gateways:
+    - stream-processing-gateway
+  http:
+    - name: "billing-routes"
+      match:
+        - uri:
+            prefix: "/api/billing"
+      route:
+        - destination:
+            host: billing-service.stream-processing.svc.cluster.local
+            subset: v001
+    - name: "order-routes"
+      match:
+        - uri:
+            prefix: "/api/orders"
+      route:
+        - destination:
+            host: order-service.stream-processing.svc.cluster.local
+            subset: v001
+    - name: "notification-routes"
+      match:
+        - uri:
+            prefix: "/api/notifications"
+      route:
+        - destination:
+            host: notification-service.stream-processing.svc.cluster.local
+            subset: v001

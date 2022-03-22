@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: billing-dr
+  namespace: stream-processing
+spec:
+  host: billing-service.stream-processing.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v001
+      labels:
+        version: 0.0.1
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: order-dr
+  namespace: stream-processing
+spec:
+  host: order-service.stream-processing.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v001
+      labels:
+        version: 0.0.1
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: notification-dr
+  namespace: stream-processing
+spec:
+  host: notification-service.stream-processing.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v001
+      labels:
+        version: 0.0.1

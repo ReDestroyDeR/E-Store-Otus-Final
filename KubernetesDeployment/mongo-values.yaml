@@ -1,0 +1,17 @@
+architecture: standalone
+auth:
+  rootUser: mongo
+  rootPassword: mongo-password
+  usernames:
+    - notification
+    - order
+  passwords:
+    - notification-password
+    - order-password
+  databases:
+    - notification
+    - order
+
+hidden:
+  persistence:
+    size: 3Gi

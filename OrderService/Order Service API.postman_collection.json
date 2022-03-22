@@ -1,0 +1,621 @@
+{
+  "info": {
+    "_postman_id": "445f2fed-8c21-4fb6-a637-bdf4f977c4ec",
+    "name": "Order Service API",
+    "description": "Order Service CRUD API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create new Order",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.environment.set(\"orders\", pm.environment.get(\"orders\") + 1)",
+              "    pm.collectionVariables.set(\"order_id\", pm.response.json().id)",
+              "})",
+              "",
+              "pm.test(\"Can't send order with negative totalPrice\", function() {",
+              "    const request_spec = {",
+              "        url: pm.collectionVariables.get(\"baseUrl\"),",
+              "        method: \"POST\",",
+              "        header: {",
+              "            'Content-Type': 'application/json'",
+              "        },",
+              "        body: {",
+              "            mode: \"raw\",",
+              "            raw: JSON.stringify({userAddress: pm.environment.get(\"email\"), totalPrice: -100})",
+              "        }",
+              "    }",
+              "",
+              "    pm.sendRequest(request_spec, function(error, response) {",
+              "        pm.expect(response.code).eq(400)",
+              "    })",
+              "}) ",
+              "",
+              "pm.test(\"Idempotency test\", function() {",
+              "    const request_spec = {",
+              "        url: pm.collectionVariables.get(\"baseUrl\"),",
+              "        method: \"POST\",",
+              "        header: {",
+              "            'Content-Type': 'application/json',",
+              "            'Idempotency-Key': pm.variables.replaceIn(\"{{$randomUUID}}\")",
+              "        },",
+              "        body: {",
+              "            mode: \"raw\",",
+              "            raw: JSON.stringify({userAddress: pm.environment.get(\"email\"), totalPrice: 100})",
+              "        }",
+              "    }",
+              "",
+              "    pm.sendRequest(request_spec, function(error, response) {",
+              "        pm.expect(response.code).eq(200)",
+              "        pm.environment.set(\"orders\", pm.environment.get(\"orders\") + 1)",
+              "        pm.sendRequest(pm.collectionVariables.get(\"baseUrl\") + \"/email/\" + pm.environment.get(\"email\"), function(err, res) {",
+              "            const base_length = res.json().length",
+              "            pm.sendRequest(request_spec, function(inner_error, inner_response) {",
+              "                pm.expect(inner_response.code).eq(200)",
+              "                pm.sendRequest(pm.collectionVariables.get(\"baseUrl\") + \"/email/\" + pm.environment.get(\"email\"), function(err_1, res_1) {",
+              "                    const new_length = res_1.json().length",
+              "                    pm.expect(base_length).eq(new_length)",
+              "                })",
+              "            })",
+              "        })",
+              "    })",
+              "}) "
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$randomUUID}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userAddress\": \"{{email}}\",\n  \"totalPrice\": {{balance_step}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Containing newly created Order",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAddress\": \"example@example.com\",\n  \"totalPrice\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"userAddress\": \"example@example.com\",\n  \"totalPrice\": 1000\n}"
+        },
+        {
+          "name": "Can actually be any error",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAddress\": \"example@example.com\",\n  \"totalPrice\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Failed validation resulting in empty Mono",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAddress\": \"example@example.com\",\n  \"totalPrice\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns order by ObjectID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.expect(pm.response.json().userAddress).eq(pm.environment.get(\"email\"))",
+              "    pm.expect(pm.response.json().totalPrice.toString()).eq(pm.environment.get(\"balance_step\"))",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/id/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "id",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{order_id}}",
+              "description": "(Required) ObjectId Hex String"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing order",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "622a2415d42a9f6a34d95cc9",
+                  "description": "(Required) ObjectId Hex String"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"userAddress\": \"example@example.com\",\n  \"totalPrice\": 1000\n}"
+        },
+        {
+          "name": "Order with such ID doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "622a2415d42a9f6a34d95cc9",
+                  "description": "(Required) ObjectId Hex String"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns all orders sent to given address",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    const array = pm.response.json()",
+              "    pm.expect(array.length).eq(pm.environment.get(\"orders\"))",
+              "    array.forEach(order =>",
+              "        pm.expect(order.userAddress).eq(pm.environment.get(\"email\"))",
+              "    )",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/email/:email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "email",
+            ":email"
+          ],
+          "variable": [
+            {
+              "key": "email",
+              "value": "{{email}}",
+              "description": "(Required) User Address"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing orders",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "john@example.com",
+                  "description": "(Required) User Address"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": \"622a2415d42a9f6a34d95cc9\",\n    \"userAddress\": \"john@example.com\",\n    \"totalPrice\": 1000\n  },\n  {\n    \"id\": \"622a265dd42a9f6a34d95cca\",\n    \"userAddress\": \"john@example.com\",\n    \"totalPrice\": 5000\n  },\n  {\n    \"id\": \"622a2661d42a9f6a34d95ccb\",\n    \"userAddress\": \"john@example.com\",\n    \"totalPrice\": 7800\n  }\n]"
+        },
+        {
+          "name": "Orders with such address doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "john@example.com",
+                  "description": "(Required) User Address"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns all orders with total price constrained by start and/or end (Inclusive)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// I'm not really sure how to test this endpoint right now",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/price?start=5000&end=7000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "price"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "5000",
+              "description": "Minimal total price"
+            },
+            {
+              "key": "end",
+              "value": "7000",
+              "description": "Maximum total price"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing orders",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/price?start=5000&end=7000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "price"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "5000"
+                },
+                {
+                  "key": "end",
+                  "value": "7000"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": \"622a2415d42a9f6a34d95cc9\",\n    \"userAddress\": \"john@example.com\",\n    \"totalPrice\": 5000\n  },\n  {\n    \"id\": \"622a265dd42a9f6a34d95cca\",\n    \"userAddress\": \"susan@example.com\",\n    \"totalPrice\": 6000\n  },\n  {\n    \"id\": \"622a2661d42a9f6a34d95ccb\",\n    \"userAddress\": \"michael@example.com\",\n    \"totalPrice\": 7000\n  }\n]"
+        },
+        {
+          "name": "Can't find orders with such prices",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/price?start=5000&end=7000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "price"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "5000"
+                },
+                {
+                  "key": "end",
+                  "value": "7000"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://arch.homework/api/orders",
+      "type": "string"
+    },
+    {
+      "key": "order_price",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    }
+  ]
+}

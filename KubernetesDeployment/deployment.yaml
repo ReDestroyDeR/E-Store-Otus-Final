@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-deployment
+  namespace: stream-processing
+  labels:
+    app: billing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing
+  template:
+    metadata:
+      labels:
+        app: billing
+        version: 0.0.1
+    spec:
+      containers:
+        - name: billing-service
+          image: "redestroyder/billing-service:0.0.1"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: billing-configmap
+            - secretRef:
+                name: billing-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-deployment
+  namespace: stream-processing
+  labels:
+    app: notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification
+  template:
+    metadata:
+      labels:
+        app: notification
+        version: 0.0.1
+    spec:
+      containers:
+        - name: notification-service
+          image: "redestroyder/notification-service:0.0.1"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: notification-configmap
+            - secretRef:
+                name: notification-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment
+  namespace: stream-processing
+  labels:
+    app: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+        version: 0.0.1
+    spec:
+      containers:
+        - name: order-service
+          image: "redestroyder/order-service:0.0.2"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: order-configmap
+            - secretRef:
+                name: order-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP

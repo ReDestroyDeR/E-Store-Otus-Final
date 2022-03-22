@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "kafka.bootstrapAddress",
+      "type": "java.lang.String",
+      "description": "Kafka bootstrap address."
+    },
+    {
+      "name": "kafka.schema.registry.url",
+      "type": "java.lang.String",
+      "description": "Kafka schema registry url."
+    }
+  ]
+}

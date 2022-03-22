@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  title: Order Service API
+  description: >-
+    Order Service CRUD API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/orders
+    description: Localhost deployment
+  - url: http://arch.homework/api/orders
+    description: Kubernetes deployment
+
+components:
+  schemas:
+    ObjectID:
+      type: object
+      description: 24-Digit Hex MongoDB ObjectID Representation
+      properties:
+        id:
+          type: string
+      example:
+        id: "622a2415d42a9f6a34d95cc9"
+
+    Order:
+      type: object
+      description: Order Model
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectID'
+        userAddress:
+          type: string
+        totalPrice:
+          type: number
+      example:
+        id: "622a2415d42a9f6a34d95cc9"
+        userAddress: "example@example.com"
+        totalPrice: 1000
+
+    OrderDTO:
+      type: object
+      description: Order Data Transfer Object
+      properties:
+        userAddress:
+          type: string
+        totalPrice:
+          type: number
+      example:
+        userAddress: "example@example.com"
+        totalPrice: 1000
+
+    OrderList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
+      example:
+        - userAddress: "john@example.com"
+          totalPrice: 1000
+        - userAddress: "susan@example.com"
+          totalPrice: 6000
+        - userAddress: "michael@example.com"
+          totalPrice: 3800
+
+
+paths:
+  /:
+    post:
+      summary: Create new Order
+      requestBody:
+        description: Order to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDTO'
+
+      responses:
+        '200':
+          description: JSON Containing newly created Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Can actually be any error
+        '404':
+          description: Failed validation resulting in empty Mono
+
+  /id/{id}:
+    get:
+      summary: Returns order by ObjectID
+      parameters:
+        - in: path
+          name: id
+          description: ObjectId Hex String
+          required: true
+          schema:
+            type: string
+          example: "622a2415d42a9f6a34d95cc9"
+
+      responses:
+        '200':
+          description: JSON Describing order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order with such ID doesn't exist
+
+  /email/{email}:
+    get:
+      summary: Returns all orders sent to given address
+      parameters:
+        - in: path
+          name: email
+          description: User Address
+          required: true
+          schema:
+            type: string
+          example: "john@example.com"
+
+
+      responses:
+        '200':
+          description: JSON Describing orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+              example:
+                - id: "622a2415d42a9f6a34d95cc9"
+                  userAddress: "john@example.com"
+                  totalPrice: 1000
+                - id: "622a265dd42a9f6a34d95cca"
+                  userAddress: "john@example.com"
+                  totalPrice: 5000
+                - id: "622a2661d42a9f6a34d95ccb"
+                  userAddress: "john@example.com"
+                  totalPrice: 7800
+
+        '404':
+          description: Orders with such address doesn't exist
+  /price:
+    get:
+      summary: Returns all orders with total price constrained by start and/or end (Inclusive)
+      parameters:
+        - in: query
+          name: start
+          description: Minimal total price
+          required: false
+          schema:
+            type: number
+            default: 0
+          example: 5000
+        - in: query
+          name: end
+          description: Maximum total price
+          required: false
+          schema:
+            type: number
+            default: 99999999999
+          example: 7000
+
+
+      responses:
+        '200':
+          description: JSON Describing orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+              example:
+                - id: "622a2415d42a9f6a34d95cc9"
+                  userAddress: "john@example.com"
+                  totalPrice: 5000
+                - id: "622a265dd42a9f6a34d95cca"
+                  userAddress: "susan@example.com"
+                  totalPrice: 6000
+                - id: "622a2661d42a9f6a34d95ccb"
+                  userAddress: "michael@example.com"
+                  totalPrice: 7000
+
+        '404':
+          description: Can't find orders with such prices

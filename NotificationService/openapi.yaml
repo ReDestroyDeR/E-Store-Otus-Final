@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: Notification Service API
+  description: >-
+    Fetch API providing access to messages that were sent to target users
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/notifications
+    description: Localhost deployment
+  - url: http://arch.homework/api/notifications
+    description: Kubernetes deployment
+
+components:
+  schemas:
+    Notification:
+      description: E-Mail Notification Representation
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: number
+        userAddress:
+          type: string
+        contents:
+          type: string
+      example:
+        id: "622c92fb80edfc4891b885ad"
+        timestamp: 1646767873728
+        userAddress: "example@example.com"
+        contents: "<html lang='ru'>...</html>"
+    
+    NotificationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Notification'
+      example:
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767873728
+          userAddress: "john@example.com"
+          contents: "<html lang='ru'>...</html>"
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767873000
+          userAddress: "susan@example.com"
+          contents: "<html lang='ru'>...</html>"
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767800000
+          userAddress: "michael@example.com"
+          contents: "<html lang='ru'>...</html>"
+
+
+paths:
+  /id/{id}:
+    get:
+      summary: Returns message by 24 digit hex ObjectID
+      parameters:
+        - in: path
+          name: id
+          description: ObjectID Hex
+          required: true
+          schema:
+            type: string
+          example: "6227af0651d9c14602d59d6a"
+      responses:
+        '200':
+          description: JSON Describing message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '404':
+          description: Notification with such ID doesn't exist
+  /email/{email}:
+    get:
+      summary: Returns all messages sent to given address
+      parameters:
+        - in: path
+          name: email
+          description: User Address
+          required: true
+          schema:
+            type: string
+          example: "john@example.com"
+
+
+      responses:
+        '200':
+          description: JSON Describing messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationList'
+              example:
+                - id: "622c92fb80edfc4865438ade"
+                  timestamp: 1646767873728
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+                - id: "622c32fb80fdf74891b885ad"
+                  timestamp: 1646767873000
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+                - id: "622c92fb80edfc4891c43852"
+                  timestamp: 1646767800000
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+
+        '404':
+          description: Notification to such address doesn't exist
+  /contents/{contents}:
+    get:
+      summary: Returns all messages with contents containing string
+      parameters:
+        - in: path
+          name: contents
+          description: Search string
+          required: true
+          schema:
+            type: string
+          example: "Some String"
+
+
+      responses:
+        '200':
+          description: JSON Describing messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationList'
+              example:
+                - id: "622c92fb80edfc4891c43852"
+                  timestamp: 1646767873728
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+                - id: "622c32fb80fdf74891b885ad"
+                  timestamp: 1646767873000
+                  userAddress: "susan@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+                - id: "622c94fb80edfc4865438ade"
+                  timestamp: 1646767800000
+                  userAddress: "michael@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+
+        '404':
+          description: Can't find notifications with contents containing target string

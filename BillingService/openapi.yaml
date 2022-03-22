@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  title: Billing API
+  description: >-
+    User Billing API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/billing
+    description: Localhost deployment
+  - url: http://arch.homework/api/billing
+    description: Kubernetes deployment
+
+components:
+  schemas:
+    UserBilling:
+      type: object
+      description: User Billing domain model
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        balance:
+          type: number
+      example:
+        id: 17
+        email: "example@example.com"
+        balance: 1000
+
+    UserBillingDTO:
+      type: object
+      description: User email with balance
+      properties:
+        email:
+          type: string
+        balance:
+          type: number
+      example:
+        email: "example@example.com"
+        balance: 1000
+
+    UserIdentityDTO:
+      type: object
+      description: User unique email
+      properties:
+        email:
+          type: string
+      example:
+        email: "example@example.com"
+
+
+
+paths:
+  /:
+    post:
+      summary: Create new Billing
+      requestBody:
+        description: Billing to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIdentityDTO'
+
+      responses:
+        '200':
+          description: JSON Containing newly created Billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBilling'
+        '400':
+          description: Billing for that email has already been registered
+
+  /id/{id}:
+    get:
+      summary: Returns billing by Big Int ID
+      parameters:
+        - in: path
+          name: id
+          description: Id
+          required: true
+          schema:
+            type: number
+          example: 17
+
+      responses:
+        '200':
+          description: JSON Describing Billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBilling'
+        '404':
+          description: Billing with such ID doesn't exist
+
+  /email/{email}:
+    get:
+      summary: Returns billing associated to such email
+      parameters:
+        - in: path
+          name: email
+          description: User Email
+          required: true
+          schema:
+            type: string
+          example: "example@example.com"
+
+
+      responses:
+        '200':
+          description: JSON Describing billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBilling'
+
+        '404':
+          description: Billing with such address doesn't exist
+
+  /funds/add:
+    post:
+      summary: Add funds to the target email billing
+      parameters:
+        - in: query
+          name: email
+          description: Target Email
+          required: true
+          schema:
+            type: string
+          example: "example@example.com"
+        - in: query
+          name: add
+          description: How much tokens to add
+          required: true
+          schema:
+            type: number
+          example: 500
+
+
+      responses:
+        '200':
+          description: JSON Describing updated billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBilling'
+              example:
+                id: "17"
+                email: "example@example.com"
+                totalPrice: 2500
+
+        '400':
+          description: Negative add
+
+        '404':
+          description: Can't find billing associated with target email
+
+  /funds/sub:
+    post:
+      summary: Subtract funds to the target email billing
+      parameters:
+        - in: query
+          name: email
+          description: Target Email
+          required: true
+          schema:
+            type: string
+          example: "example@example.com"
+        - in: query
+          name: sub
+          description: How much tokens to subtract
+          required: true
+          schema:
+            type: number
+          example: 500
+
+
+      responses:
+        '200':
+          description: JSON Describing updated billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBilling'
+              example:
+                id: "17"
+                email: "example@example.com"
+                totalPrice: 2000
+
+        '400':
+          description: Negative subtraction OR Not enough money
+
+        '404':
+          description: Can't find billing associated with target email

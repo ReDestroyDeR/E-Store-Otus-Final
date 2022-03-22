@@ -1,0 +1,17 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_URI}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE}
+    name: ${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+
+  liquibase:
+    url: jdbc:postgresql://${POSTGRES_URI}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE}
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    change-log: classpath:db/changelog/changelog-master.yaml
+
+kafka:
+  bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS}
+  schemaRegistryUrl: ${KAFKA_SCHEMA_REGISTRY_URL}
+  applicationId: ${KAFKA_STREAMS_APPLICATION_ID}

@@ -1,0 +1,813 @@
+{
+  "info": {
+    "_postman_id": "98e53b11-880d-4036-8c4b-6e39a8bac9f7",
+    "name": "Billing API",
+    "description": "User Billing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "funds",
+      "item": [
+        {
+          "name": "Add funds to the target email billing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Success\", function() {",
+                  "    pm.expect(pm.response.code).eq(200)",
+                  "    pm.environment.set(\"balance_steps\", pm.environment.get(\"balance_steps\") + 1)",
+                  "})",
+                  "",
+                  "pm.test(\"Can't add negative amount\", function() {",
+                  "    const request = pm.request",
+                  "    request.removeQueryParams(\"add\")",
+                  "    request.addQueryParams([\"add=\" + -500])",
+                  "    pm.sendRequest(request, function(error, response) {",
+                  "        pm.expect(response.code).eq(400)",
+                  "    })",
+                  "})",
+                  "",
+                  "pm.test(\"Can't add to unknown billing\", function() {",
+                  "    const request = pm.request",
+                  "    request.removeQueryParams(\"email\")",
+                  "    request.addQueryParams(\"email=\" +  \"doesntexist@idonotexist.trustme\")",
+                  "    request.removeQueryParams(\"add\")",
+                  "    request.addQueryParams(\"add=\" + 500)",
+                  "    pm.sendRequest(request, function(error, response) {",
+                  "        pm.expect(response.code).eq(404)",
+                  "    })",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/funds/add?email={{email}}&add={{balance_step}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "funds",
+                "add"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "description": "(Required) Target Email"
+                },
+                {
+                  "key": "add",
+                  "value": "{{balance_step}}",
+                  "description": "(Required) How much tokens to add"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "JSON Describing updated billing",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/add?email=example@example.com&add=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "add"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "add",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"17\",\n  \"email\": \"example@example.com\",\n  \"totalPrice\": 2500\n}"
+            },
+            {
+              "name": "Negative add",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/add?email=example@example.com&add=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "add"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "add",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Can't find billing associated with target email",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/add?email=example@example.com&add=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "add"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "add",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Subtract funds to the target email billing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Success\", function() {",
+                  "    if (pm.environment.get(\"balance_steps\") == 0) {",
+                  "        pm.expect(pm.response.code).eq(400)",
+                  "    } else {",
+                  "        pm.expect(pm.response.code).eq(200)",
+                  "        pm.environment.set(\"balance_steps\", pm.environment.get(\"balance_steps\") - 1)",
+                  "    }",
+                  "})",
+                  "",
+                  "pm.test(\"Can't subtract negative amount\", function() {",
+                  "    const request = pm.request",
+                  "    request.removeQueryParams(\"sub\")",
+                  "    request.addQueryParams([\"sub=\" + -500])",
+                  "    pm.sendRequest(request, function(error, response) {",
+                  "        pm.expect(response.code).eq(400)",
+                  "    })",
+                  "})",
+                  "",
+                  "pm.test(\"Can't subtract from unknown billing\", function() {",
+                  "    const request = pm.request",
+                  "    request.removeQueryParams(\"email\")",
+                  "    request.addQueryParams(\"email=\" +  \"doesntexist@idonotexist.trustme\")",
+                  "    request.removeQueryParams(\"sub\")",
+                  "    request.addQueryParams(\"sub=\" + 500)",
+                  "    pm.sendRequest(request, function(error, response) {",
+                  "        pm.expect(response.code).eq(404)",
+                  "    })",
+                  "})",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/funds/sub?email={{email}}&sub={{balance_step}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "funds",
+                "sub"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "description": "(Required) Target Email"
+                },
+                {
+                  "key": "sub",
+                  "value": "{{balance_step}}",
+                  "description": "(Required) How much tokens to subtract"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "JSON Describing updated billing",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/sub?email=example@example.com&sub=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "sub"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "sub",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"17\",\n  \"email\": \"example@example.com\",\n  \"totalPrice\": 2000\n}"
+            },
+            {
+              "name": "Negative subtraction OR Not enough money",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/sub?email=example@example.com&sub=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "sub"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "sub",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Can't find billing associated with target email",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/funds/sub?email=example@example.com&sub=500",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "funds",
+                    "sub"
+                  ],
+                  "query": [
+                    {
+                      "key": "email",
+                      "value": "example@example.com"
+                    },
+                    {
+                      "key": "sub",
+                      "value": "500"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Create new Billing",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.collectionVariables.set(\"id\", pm.response.json().id)",
+              "    pm.collectionVariables.set(\"balance\", pm.response.json().balance)",
+              "})",
+              "",
+              "pm.test(\"Can't create with the same email\", function() {",
+              "    pm.sendRequest(pm.request, function (error, response) {",
+              "        pm.expect(response.code).eq(400)",
+              "    })",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"email\", pm.variables.replaceIn(\"{{$randomEmail}}\"))",
+              "pm.environment.set(\"balance_step\", pm.variables.replaceIn(\"{{$randomInt}}\"))",
+              "pm.environment.set(\"balance_steps\", 0)",
+              "pm.environment.set(\"orders\", 0)",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Containing newly created Billing",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 17,\n  \"email\": \"example@example.com\",\n  \"balance\": 1000\n}"
+        },
+        {
+          "name": "Billing for that email has already been registered",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns billing by Big Int ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.expect(pm.response.json().id).eq(pm.collectionVariables.get(\"id\"))",
+              "    pm.expect(pm.response.json().email).eq(pm.environment.get(\"email\"))",
+              "})",
+              "",
+              "pm.test(\"Can't find\", function() {",
+              "    pm.sendRequest(pm.collectionVariables.get(\"baseUrl\") + \"/id/-1\", function (error, response) {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/id/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "id",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{id}}",
+              "description": "(Required) Id"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing Billing",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "17",
+                  "description": "(Required) Id"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 17,\n  \"email\": \"example@example.com\",\n  \"balance\": 1000\n}"
+        },
+        {
+          "name": "Billing with such ID doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/id/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "id",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "17",
+                  "description": "(Required) Id"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Returns billing associated to such email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.expect(pm.response.json().id).eq(pm.collectionVariables.get(\"id\"))",
+              "    pm.expect(pm.response.json().email).eq(pm.environment.get(\"email\"))",
+              "})",
+              "",
+              "pm.test(\"Can't find\", function() {",
+              "    pm.sendRequest( pm.collectionVariables.get(\"baseUrl\") + \"/email/doesntexist@idonotexist.trustme\", function (error, response) {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/email/:email",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "email",
+            ":email"
+          ],
+          "variable": [
+            {
+              "key": "email",
+              "value": "{{email}}",
+              "description": "(Required) User Email"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "JSON Describing billing",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "example@example.com",
+                  "description": "(Required) User Email"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 17,\n  \"email\": \"example@example.com\",\n  \"balance\": 1000\n}"
+        },
+        {
+          "name": "Billing with such address doesn't exist",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/email/:email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "example@example.com",
+                  "description": "(Required) User Email"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://arch.homework/api/billing",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "balance",
+      "value": ""
+    }
+  ]
+}

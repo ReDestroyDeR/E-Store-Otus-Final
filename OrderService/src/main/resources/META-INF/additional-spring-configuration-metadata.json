@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "kafka.bootstrapAddress",
+      "type": "java.lang.String",
+      "description": "Kafka bootstrap address."
+    },
+    {
+      "name": "kafka.schema.registry.url",
+      "type": "java.lang.String",
+      "description": "Kafka schema registry url."
+    },
+    {
+      "name": "service.order.idempotency.ttl",
+      "type": "java.lang.String",
+      "description": "For how long order idempotency records will be stored."
+    }
+  ]
+}

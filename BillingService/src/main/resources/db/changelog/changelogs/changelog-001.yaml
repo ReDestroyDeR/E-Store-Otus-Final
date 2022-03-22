@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Daniil Shreyder
+      changes:
+        - createTable:
+            tableName: billings
+            remarks: User Billings
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: billings_pk
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(64)
+                  remarks: User email
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: billings_email_uq
+                    nullable: false
+              - column:
+                  name: balance
+                  type: int
+                  remarks: User Balance
+
+      rollback:
+        - dropTable:
+            tableName: billings
