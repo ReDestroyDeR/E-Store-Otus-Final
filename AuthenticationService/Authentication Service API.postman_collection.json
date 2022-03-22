@@ -1,0 +1,982 @@
+{
+  "info": {
+    "_postman_id": "c899f6dc-44ff-4aca-b540-ca6d54142583",
+    "name": "Authentication Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register a new user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "    pm.environment.set(\"user-exists\", true)",
+              "})",
+              "",
+              "pm.sendRequest(pm.request, function(error, response) {",
+              "    pm.test(\"Can't register the same user\", function() {",
+              "        pm.expect(response.code).not.eq(200)",
+              "    })",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"email\", pm.variables.replaceIn(\"{{$randomEmail}}\"))",
+              "pm.environment.set(\"password\", pm.variables.replaceIn(\"{{$randomPassword}}\"))",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Bad Request",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:36:03.528+00:00\",\n  \"path\": \"/register\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"requestId\": \"050585f7-15\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Login into existing user account",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "})",
+              "",
+              "const request_spec = {",
+              "    url: pm.collectionVariables.get(\"baseUrl\") + \"/login\",",
+              "    method: \"POST\",",
+              "    header: {",
+              "        'Content-Type': 'application/json'",
+              "    },",
+              "    body: {",
+              "         mode: \"raw\",",
+              "         raw: JSON.stringify({email: pm.environment.get(\"email\"), password: \"\"})",
+              "    }",
+              "}",
+              "",
+              "",
+              "pm.sendRequest(request_spec, function(error, response) {",
+              "    pm.test(\"Can't login with bad password\", function() {",
+              "        pm.expect(response.code).eq(403)",
+              "    })",
+              "})",
+              "",
+              "request_spec.body = {",
+              "    mode: \"raw\",",
+              "    raw: JSON.stringify({email: pm.environment.get(\"idonotexist@trustme.trust\"), password: pm.environment.get(\"password\")})",
+              "}",
+              "",
+              "pm.sendRequest(request_spec, function(error, response) {",
+              "    pm.test(\"Can't login to non existent\", function() {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhdXRoLmFyY2guaG9tZXdvcmsiLCJzdWIiOiJleGFtcGxlQGV4YW1wbGUuY29tIiwiaWF0IjoxNjQ3OTg3ODI4LCJleHAiOjE2NDc5ODk2Mjh9.PlZRIGNK0QTHUIfH9iBtUkWwChdQ9kn7l7N51cBYHTjLcDMPKeJ2UZiMevSXqkLNRrxyHotHVyqLUJfrxM6-STWYy4BSw5fpsCDM9-FyLUKVbtb28EQhZ6QCP7Bi7lSOFWwDutIZG51_QvvK-0M0Fp_6zoqkGp7ACyjf5PPTKKGkhjGzo-zEkAYFKjiPKedu6HlTa1Fj0frn6fxdw_ofGDII5K8liAoPabF0yKoxOsfpj-vejY3qrKJM7rcBjgkmvaYFoWzWWFCUopa7k_fSK8x6HuJLeyZB_H9ryS31Jj5FgSpGutzP3yGTS94CBFJgvTL9dIwb4ZN5KOT70-0X9Q"
+        },
+        {
+          "name": "Forbidden",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:30:09.912+00:00\",\n  \"path\": \"/login\",\n  \"status\": 403,\n  \"error\": \"Forbidden\",\n  \"requestId\": \"050585f7-8\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:33:10.289+00:00\",\n  \"path\": \"/login\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"requestId\": \"050585f7-11\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Change user password",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"new_password\", pm.variables.replaceIn(\"{{$randomPassword}}\"))"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "})",
+              "",
+              "",
+              "pm.sendRequest(pm.request, function(error, response) {",
+              "    pm.test(\"Can't change password with bad password\", function() {",
+              "        pm.expect(response.code).eq(403)",
+              "    })",
+              "})",
+              "",
+              "pm.environment.set(\"password\", pm.environment.get(\"new_password\"))"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/change-password?password={{new_password}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "change-password"
+          ],
+          "query": [
+            {
+              "key": "password",
+              "value": "{{new_password}}",
+              "description": "(Required) "
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-password?password=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-password"
+              ],
+              "query": [
+                {
+                  "key": "password",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Forbidden",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-password?password=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-password"
+              ],
+              "query": [
+                {
+                  "key": "password",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:30:09.912+00:00\",\n  \"path\": \"/change-password\",\n  \"status\": 403,\n  \"error\": \"Forbidden\",\n  \"requestId\": \"050585f7-8\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-password?password=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-password"
+              ],
+              "query": [
+                {
+                  "key": "password",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:33:10.289+00:00\",\n  \"path\": \"/login\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"requestId\": \"050585f7-11\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Change user email",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"new_email\", pm.variables.replaceIn(\"{{$randomEmail}}\"))",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "})",
+              "",
+              "",
+              "pm.sendRequest(pm.request, function(error, response) {",
+              "    pm.test(\"Email had really changed\", function() {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})",
+              "",
+              "pm.environment.set(\"email\", pm.environment.get(\"new_email\"))",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/change-email?email={{new_email}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "change-email"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "{{new_email}}",
+              "description": "(Required) "
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-email?email=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Forbidden",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-email?email=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:30:09.912+00:00\",\n  \"path\": \"/change-email\",\n  \"status\": 403,\n  \"error\": \"Forbidden\",\n  \"requestId\": \"050585f7-8\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/change-email?email=et voluptate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "et voluptate"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:33:10.289+00:00\",\n  \"path\": \"/change-email\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"requestId\": \"050585f7-11\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    if (pm.environment.get(\"user-exists\")) {",
+              "        pm.expect(pm.response.code).eq(200)",
+              "    }",
+              "})",
+              "",
+              "",
+              "pm.sendRequest(pm.request, function(error, response) {",
+              "    pm.test(\"User doesn't exist\", function() {",
+              "        pm.expect(response.code).eq(404)",
+              "    })",
+              "})",
+              "",
+              "pm.environment.set(\"user-exists\", false)",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/delete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "delete"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "delete"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Forbidden",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "delete"
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:37:35.525+00:00\",\n  \"path\": \"/delete\",\n  \"status\": 403,\n  \"error\": \"Forbidden\",\n  \"requestId\": \"050585f7-22\"\n}"
+        },
+        {
+          "name": "Not Found",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "delete"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2022-03-22T19:38:11.219+00:00\",\n  \"path\": \"/delete\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"requestId\": \"050585f7-23\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get JWKs",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Success\", function() {",
+              "    pm.expect(pm.response.code).eq(200)",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "*/*"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/.well-known/jwks.json",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ".well-known",
+            "jwks.json"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/.well-known/jwks.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ".well-known",
+                "jwks.json"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "*/*"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
