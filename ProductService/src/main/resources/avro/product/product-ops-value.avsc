@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "ProductOpsValue",
+  "namespace": "ru.red.avro",
+  "fields": [
+    {
+      "name": "pricePerUnit",
+      "type": "int"
+    },
+    {
+      "name": "stockDelta",
+      "type": "int"
+    }
+  ]
+}

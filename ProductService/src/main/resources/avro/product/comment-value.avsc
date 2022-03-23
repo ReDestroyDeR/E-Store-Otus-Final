@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "CommentValue",
+  "namespace": "ru.red.avro",
+  "fields": [
+    {
+      "name": "authorEmail",
+      "type": "string"
+    },
+    {
+      "name": "contents",
+      "type": "string"
+    },
+    {
+      "name": "recommend",
+      "type": "boolean"
+    }
+  ]
+}
