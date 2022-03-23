@@ -18,6 +18,9 @@ import ru.red.orderservice.dto.OrderDTO;
 import ru.red.orderservice.mapper.OrderMapper;
 import ru.red.orderservice.util.OrderUtil;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles({"test", "kafka"})
@@ -38,6 +41,7 @@ class OrderServiceImplTest {
     static void mongoDbProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
         registry.add("spring.data.mongodb.port", () -> mongoDBContainer.getMappedPort(27017));
+        registry.add("kafka.bootstrapAddress", kafkaContainer::getBootstrapServers);
     }
 
     @Test
@@ -117,9 +121,9 @@ class OrderServiceImplTest {
     void fetchNotificationById() {
         var order = OrderUtil.createRandom();
         order = service.createOrder(mapper.orderToOrderDTO(order)).block();
-        assert order != null;
+        assertNotNull(order);
         var found = service.fetchOrderById(order.getId()).block();
-        assert found != null;
-        assert found.equals(order);
+        assertNotNull(found);
+        assertEquals(found, order);
     }
 }

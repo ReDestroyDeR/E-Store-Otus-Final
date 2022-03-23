@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.red.authenticationservice.dto.UserDetachedDTO;
+import ru.red.authenticationservice.exception.BadEmailException;
 import ru.red.authenticationservice.exception.BadPasswordException;
 import ru.red.authenticationservice.exception.BadRequestException;
 import ru.red.authenticationservice.service.UserService;
+
+import static ru.red.authenticationservice.util.EmailUtil.isEmail;
 
 /**
  * Controller responsible for handling user registration, patching, signing-in <i>Handing out JWTs</i> and removal.
@@ -52,12 +55,20 @@ public class AuthController {
      */
     @PostMapping("register")
     public Mono<Void> register(@RequestBody UserDetachedDTO userDetachedDTO) {
+        if (!isEmail(userDetachedDTO.getEmail())) {
+            return Mono.error(new BadEmailException());
+        }
+
         return userService.registerUser(userDetachedDTO).then();
     }
 
     @PostMapping("change-email")
     public Mono<Void> changeEmail(@RequestParam("email") String email,
                                   @RequestBody UserDetachedDTO userDetachedDTO) {
+        if (!isEmail(email)) {
+            return Mono.error(new BadEmailException());
+        }
+
         return userService.updateEmail(email, userDetachedDTO).then();
     }
 

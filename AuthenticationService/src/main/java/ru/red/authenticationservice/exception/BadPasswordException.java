@@ -3,7 +3,7 @@ package ru.red.authenticationservice.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
+@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Bad Password")
 public class BadPasswordException extends RuntimeException {
     public BadPasswordException() {
     }
