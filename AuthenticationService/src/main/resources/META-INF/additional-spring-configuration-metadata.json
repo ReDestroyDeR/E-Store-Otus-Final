@@ -31,11 +31,6 @@
       "description": "IPs of Kafka Brokers."
     },
     {
-      "name": "kafka.applicationId",
-      "type": "java.lang.String",
-      "description": "Kafka Streams application id."
-    },
-    {
       "name": "kafka.schemaRegistryUrl",
       "type": "java.lang.String",
       "description": "Schema registry connection url."

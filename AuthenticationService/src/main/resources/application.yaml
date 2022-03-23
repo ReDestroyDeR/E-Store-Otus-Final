@@ -25,5 +25,4 @@ auth:
 
 kafka:
   bootstrapServers: "localhost:9092"
-  applicationId: "billing-service"
   schemaRegistryUrl: "http://localhost:8081"

@@ -7,7 +7,8 @@ import java.util.List;
 @Data
 public class Product {
     private String name;
-    private Integer inStock;
+    private Integer quantity;
+    private Integer pricePerUnit;
     private List<Comment> commentList;
 
     public boolean addComment(Comment comment) {
