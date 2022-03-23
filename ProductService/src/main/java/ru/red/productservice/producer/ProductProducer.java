@@ -1,6 +1,7 @@
 package ru.red.productservice.producer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -16,8 +17,8 @@ public class ProductProducer {
     private final String productOpsTopicName;
 
     @Autowired
-    public ProductProducer(KafkaTemplate<String, ProductOpsValue> kafka,
-                           @Value("#(@topicConfig.productOpsTopicName)") String productOpsTopicName) {
+    public ProductProducer(@Qualifier("product-ops-kafka-template") KafkaTemplate<String, ProductOpsValue> kafka,
+                           @Value("#(@topicConfig.PRODUCT_OPS_TOPIC_NAME)") String productOpsTopicName) {
         this.kafka = kafka;
         this.productOpsTopicName = productOpsTopicName;
     }

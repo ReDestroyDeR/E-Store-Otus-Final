@@ -129,6 +129,7 @@
                     <sourceDirectory>src/main/resources/avro/product/</sourceDirectory>
                     <includes>
                         <include>product-ops-value.avsc</include>
+                        <include>comment-key.avsc</include>
                         <include>comment-value.avsc</include>
                     </includes>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
@@ -154,6 +155,9 @@
                         <product-ops-value>
                             src/main/resources/avro/product/product-ops-value.avsc
                         </product-ops-value>
+                        <comment-key>
+                            src/main/resources/avro/product/comment-key.avsc
+                        </comment-key>
                         <comment-value>
                             src/main/resources/avro/product/comment-value.avsc
                         </comment-value>
@@ -161,7 +165,7 @@
                     <outputDirectory>src/main/resources/avro/product/</outputDirectory>
                     <subjectPatterns>
                         <pattern>^product-ops-value$</pattern>
-                        <pattern>^comment-value$</pattern>
+                        <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>

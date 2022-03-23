@@ -1,15 +1,15 @@
 {
   "type": "record",
-  "name": "CommentValue",
+  "name": "CommentKey",
   "namespace": "ru.red.avro",
   "fields": [
     {
-      "name": "contents",
+      "name": "productName",
       "type": "string"
     },
     {
-      "name": "recommend",
-      "type": "boolean"
+      "name": "authorEmail",
+      "type": "string"
     }
   ]
 }

@@ -13,13 +13,13 @@ Product Name **[STRING]**
 
 ## Comments
 
-### Key *{RAW}*
+### Key *{AVRO}*
 
-Product Name **[STRING]**
+1. Product Name **[STRING]**
+2. Author email **[STRING]**
 
 ### Value *{AVRO}*
 
-1. Author email **[STRING]**
-2. Contents **[STRING]**
-3. Recommend **[BOOLEAN]**
+1. Contents **[STRING]**
+2. Recommend **[BOOLEAN]**
 
