@@ -193,10 +193,10 @@
                     </schemaRegistryUrls>
                     <subjects>
                         <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/notifications/order-manipulation-key.avsc
+                            src/main/resources/avro/streamprocessing/orders/order-manipulation-key.avsc
                         </order-acknowledgment-key>
                         <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/notifications/order-manipulation-value.avsc
+                            src/main/resources/avro/streamprocessing/orders/order-manipulation-value.avsc
                         </order-acknowledgment-value>
                     </subjects>
                     <outputDirectory>src/main/resources/avro/streamprocessing/orders/</outputDirectory>
