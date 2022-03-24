@@ -171,6 +171,9 @@
                     <includes>
                         <include>order-manipulation-key.avsc</include>
                         <include>order-manipulation-value.avsc</include>
+                        <include>product-ops-value.avsc</include>
+                        <include>comment-key.avsc</include>
+                        <include>comment-value.avsc</include>
                     </includes>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
@@ -202,6 +205,8 @@
                     <outputDirectory>src/main/resources/avro/streamprocessing/orders/</outputDirectory>
                     <subjectPatterns>
                         <pattern>^order-manipulation-(key|value)$</pattern>
+                        <pattern>^product-ops-value$</pattern>
+                        <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>

@@ -1,5 +1,6 @@
 kafka:
   bootstrapAddress: "localhost:9092"
+  applicationId: "order-service"
   schema:
     registry:
       url: "http://localhost:8081"
