@@ -18,7 +18,7 @@ public class ProductProducer {
 
     @Autowired
     public ProductProducer(@Qualifier("product-ops-kafka-template") KafkaTemplate<String, ProductOpsValue> kafka,
-                           @Value("#(@topicConfig.PRODUCT_OPS_TOPIC_NAME)") String productOpsTopicName) {
+                           @Value("#{@newTopicConfig.PRODUCT_OPS_TOPIC_NAME}") String productOpsTopicName) {
         this.kafka = kafka;
         this.productOpsTopicName = productOpsTopicName;
     }
@@ -28,7 +28,7 @@ public class ProductProducer {
     }
 
     public Mono<SendResult<String, ProductOpsValue>> sendMessage(ProductSubtractionDTO subtraction) {
-        return sendMessage(subtraction.getName(), -subtraction.getSubtraction(), null);
+        return sendMessage(subtraction.getName(), -subtraction.getSubtraction(), 0);
     }
 
     private Mono<SendResult<String, ProductOpsValue>> sendMessage(String name, Integer stockDelta, Integer price) {

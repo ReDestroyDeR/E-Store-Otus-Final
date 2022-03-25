@@ -1,6 +1,7 @@
-package ru.red.orderservice.stream;
+package ru.red.productservice.stream;
 
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import lombok.Getter;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import ru.red.avro.CommentKey;
 import ru.red.avro.CommentValue;
 import ru.red.avro.ProductOpsValue;
+import ru.red.avro.ProductTableValue;
 
 import java.util.Map;
 
@@ -24,14 +26,19 @@ import java.util.Map;
 public class ProductProcessor {
     private static final Serde<ProductOpsValue> PRODUCT_OPS_VALUE_SERDE = new SpecificAvroSerde<>();
 
+    private static final Serde<ProductTableValue> PRODUCT_TABLE_VALUE_SERDE = new SpecificAvroSerde<>();
+
     private static final Serde<CommentKey> COMMENT_KEY_SERDE = new SpecificAvroSerde<>();
     private static final Serde<CommentValue> COMMENT_VALUE_SERDE = new SpecificAvroSerde<>();
 
-    public String productStockStateStoreName;
+    @Getter
+    private String productStockStateStoreName;
 
     @Autowired
     public ProductProcessor(@Qualifier("serde-config") Map<String, String> serdeConfig) {
         PRODUCT_OPS_VALUE_SERDE.configure(serdeConfig, false);
+
+        PRODUCT_TABLE_VALUE_SERDE.configure(serdeConfig, false);
 
         COMMENT_KEY_SERDE.configure(serdeConfig, true);
         COMMENT_VALUE_SERDE.configure(serdeConfig, false);
@@ -39,23 +46,25 @@ public class ProductProcessor {
 
     @Autowired
     void buildPipeline(StreamsBuilder builder) {
-        KTable<String, ProductOpsValue> products = builder.stream("product-ops",
+        KTable<String, ProductTableValue> products = builder.stream("product-ops",
                         Consumed.with(Serdes.String(), PRODUCT_OPS_VALUE_SERDE))
                 .groupByKey()
-                .aggregate(ProductOpsValue::new,
+                .aggregate(ProductTableValue::new,
                         ((key, value, aggregate) -> {
                             if (value == null) {
                                 return null;
                             }
 
                             if (value.getPricePerUnit() != 0) {
-                                aggregate.setPricePerUnit(value.getPricePerUnit());
+                                aggregate.setPrice(value.getPricePerUnit());
                             }
-                            aggregate.setStockDelta(aggregate.getStockDelta() + value.getStockDelta());
+                            aggregate.setQuantity(aggregate.getQuantity() + value.getStockDelta());
                             return aggregate;
                         }),
-                        Materialized.<String, ProductOpsValue, KeyValueStore<Bytes, byte[]>>as("product-stock-table")
-                                .withValueSerde(PRODUCT_OPS_VALUE_SERDE));
+                        Materialized.<String, ProductTableValue, KeyValueStore<Bytes, byte[]>>as("product-stock-table")
+                                .withValueSerde(PRODUCT_TABLE_VALUE_SERDE));
+
+        products.toStream().to("product-stock-stream");
 
         this.productStockStateStoreName = products.queryableStoreName();
     }

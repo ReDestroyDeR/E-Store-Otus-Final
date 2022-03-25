@@ -19,15 +19,19 @@ import java.util.HashMap;
 @EnableKafka
 @Configuration
 public class KafkaConfig {
+    @Value("${kafka.bootstrapAddress}")
+    private String bootstrapAddress;
+
+    @Value("${kafka.schemaRegistryUrl}")
+    private String schemaRegistryUrl;
+
     // Product Operations Kafka-Producer Configuration
 
     @Bean("product-ops-producer-factory")
-    public ProducerFactory<String, ProductOpsValue> productOpsProducerFactory(
-            @Value("${kafka.bootstrapServers}") String bootstrapServers,
-            @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
+    public ProducerFactory<String, ProductOpsValue> productOpsProducerFactory() {
 
         var properties = new HashMap<String, Object>();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         properties.put(ProducerConfig.ACKS_CONFIG, "all");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
@@ -37,21 +41,17 @@ public class KafkaConfig {
     }
 
     @Bean("product-ops-kafka-template")
-    public KafkaTemplate<String, ProductOpsValue> productOpsKafkaTemplate(
-            @Value("${kafka.bootstrapServers}") String bootstrapServers,
-            @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
-        return new KafkaTemplate<>(productOpsProducerFactory(bootstrapServers, schemaRegistryUrl));
+    public KafkaTemplate<String, ProductOpsValue> productOpsKafkaTemplate() {
+        return new KafkaTemplate<>(productOpsProducerFactory());
     }
 
     // Comment Kafka-Producer Configuration
 
     @Bean("comment-producer-factory")
-    public ProducerFactory<CommentKey, CommentValue> commentProducerFactory(
-            @Value("${kafka.bootstrapServers}") String bootstrapServers,
-            @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
+    public ProducerFactory<CommentKey, CommentValue> commentProducerFactory() {
 
         var properties = new HashMap<String, Object>();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         properties.put(ProducerConfig.ACKS_CONFIG, "1");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
@@ -61,9 +61,7 @@ public class KafkaConfig {
     }
 
     @Bean("comment-kafka-template")
-    public KafkaTemplate<CommentKey, CommentValue> commentKafkaTemplate(
-            @Value("${kafka.bootstrapServers}") String bootstrapServers,
-            @Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
-        return new KafkaTemplate<>(commentProducerFactory(bootstrapServers, schemaRegistryUrl));
+    public KafkaTemplate<CommentKey, CommentValue> commentKafkaTemplate() {
+        return new KafkaTemplate<>(commentProducerFactory());
     }
 }

@@ -1,4 +1,7 @@
 kafka:
-  bootstrapServers: "localhost:9092"
+  bootstrapAddress: "localhost:9092"
   applicationId: "product-service"
   schemaRegistryUrl: "http://localhost:8081"
+
+server:
+  port: 8070

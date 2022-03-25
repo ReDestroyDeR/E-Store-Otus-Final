@@ -81,6 +81,15 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-avro-serde</artifactId>
+            <version>${confluent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <version>${confluent.version}</version>
@@ -129,6 +138,7 @@
                     <sourceDirectory>src/main/resources/avro/product/</sourceDirectory>
                     <includes>
                         <include>product-ops-value.avsc</include>
+                        <include>product-table-value.avsc</include>
                         <include>comment-key.avsc</include>
                         <include>comment-value.avsc</include>
                     </includes>
@@ -155,6 +165,9 @@
                         <product-ops-value>
                             src/main/resources/avro/product/product-ops-value.avsc
                         </product-ops-value>
+                        <product-table-value>
+                            src/main/resources/avro/streamprocessing/orders/product-table-value.avsc
+                        </product-table-value>
                         <comment-key>
                             src/main/resources/avro/product/comment-key.avsc
                         </comment-key>
@@ -164,7 +177,7 @@
                     </subjects>
                     <outputDirectory>src/main/resources/avro/product/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^product-ops-value$</pattern>
+                        <pattern>^product-(ops|table)-value$</pattern>
                         <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>

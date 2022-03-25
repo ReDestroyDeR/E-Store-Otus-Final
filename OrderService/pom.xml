@@ -172,6 +172,7 @@
                         <include>order-manipulation-key.avsc</include>
                         <include>order-manipulation-value.avsc</include>
                         <include>product-ops-value.avsc</include>
+                        <include>product-table-value.avsc</include>
                         <include>comment-key.avsc</include>
                         <include>comment-value.avsc</include>
                     </includes>
@@ -201,11 +202,14 @@
                         <order-acknowledgment-value>
                             src/main/resources/avro/streamprocessing/orders/order-manipulation-value.avsc
                         </order-acknowledgment-value>
+                        <product-table-value>
+                            src/main/resources/avro/streamprocessing/orders/product-table-value.avsc
+                        </product-table-value>
                     </subjects>
                     <outputDirectory>src/main/resources/avro/streamprocessing/orders/</outputDirectory>
                     <subjectPatterns>
                         <pattern>^order-manipulation-(key|value)$</pattern>
-                        <pattern>^product-ops-value$</pattern>
+                        <pattern>^product-(table|ops)-value$</pattern>
                         <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>

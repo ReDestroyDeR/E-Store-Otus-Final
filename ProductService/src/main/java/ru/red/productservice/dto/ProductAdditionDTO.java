@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class ProductAdditionDTO {
     private String name;
-    private Integer addition;
-    private Integer pricePerUnit;
+    private Integer addition = 0;
+    private Integer pricePerUnit = 0;
 
     public void setAddition(Integer addition) {
         if (addition < 0) {

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "ProductTableValue",
+  "namespace": "ru.red.avro",
+  "fields": [
+    {
+      "name": "price",
+      "type": "int"
+    },
+    {
+      "name": "quantity",
+      "type": "int"
+    }
+  ]
+}

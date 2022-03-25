@@ -9,15 +9,18 @@ import ru.red.avro.ProductOpsValue;
 import ru.red.productservice.dto.ProductAdditionDTO;
 import ru.red.productservice.dto.ProductSubtractionDTO;
 import ru.red.productservice.producer.ProductProducer;
+import ru.red.productservice.service.exception.NotEnoughInStockException;
 
 @Log4j2
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductProducer producer;
+    private final ProductsStateService stateService;
 
     @Autowired
-    public ProductServiceImpl(ProductProducer producer) {
+    public ProductServiceImpl(ProductProducer producer, ProductsStateService stateService) {
         this.producer = producer;
+        this.stateService = stateService;
     }
 
     @Override
@@ -29,8 +32,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<SendResult<String, ProductOpsValue>> updateProduct(ProductSubtractionDTO productSubtraction) {
-        return producer.sendMessage(productSubtraction)
+        return validation(productSubtraction.getName(), productSubtraction.getSubtraction())
+                .flatMap(ignore -> producer.sendMessage(productSubtraction))
                 .doOnNext(log::info)
                 .doOnError(log::warn);
+    }
+
+    private Mono<Object> validation(String name, int subtraction) {
+        var quantity = stateService.getByNameWithoutComments(name).getQuantity();
+        if (quantity < subtraction) {
+            return Mono.error(new NotEnoughInStockException("%s quantity %s asking for %s"
+                    .formatted(name, quantity, subtraction)));
+        }
+        return Mono.just(new Object());
     }
 }
