@@ -176,7 +176,9 @@
                 <configuration>
                     <sourceDirectory>src/main/resources/avro/auth/</sourceDirectory>
                     <includes>
-                        <include>user-manipulation-value.avsc</include>
+                        <include>user-manipulation-user-created.avsc</include>
+                        <include>user-manipulation-user-updated-email.avsc</include>
+                        <include>user-manipulation-user-deleted.avsc</include>
                     </includes>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
@@ -198,13 +200,19 @@
                         <param>${schemaRegistryUrl}</param>
                     </schemaRegistryUrls>
                     <subjects>
-                        <user-manipulation-value>
-                            src/main/resources/avro/auth/user-manipulation-value.avsc
-                        </user-manipulation-value>
+                        <user-manipulation-user-created>
+                            src/main/resources/avro/auth/user-manipulation-user-created.avsc
+                        </user-manipulation-user-created>
+                        <user-manipulation-user-updated-email>
+                            src/main/resources/avro/auth/user-manipulation-user-updated-email.avsc
+                        </user-manipulation-user-updated-email>
+                        <user-manipulation-user-deleted>
+                            src/main/resources/avro/auth/user-manipulation-user-deleted.avsc
+                        </user-manipulation-user-deleted>
                     </subjects>
                     <outputDirectory>src/main/resources/avro/auth/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^user-manipulation-value$</pattern>
+                        <pattern>^user-manipulation-user-(created|deleted|updated-email)$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>

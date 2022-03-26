@@ -13,9 +13,9 @@ import ru.red.authenticationservice.exception.BadRequestException;
 import ru.red.authenticationservice.exception.NotFoundException;
 import ru.red.authenticationservice.jooq.tables.records.UsersRecord;
 import ru.red.authenticationservice.mapper.UserMapper;
+import ru.red.authenticationservice.producer.UserManipulationProducer;
 import ru.red.authenticationservice.repository.UserRepository;
 import ru.red.authenticationservice.security.jwt.JwtProvider;
-import ru.red.authenticationservice.streams.UserManipulationProducer;
 import ru.red.authenticationservice.util.StringUtil;
 
 @Log4j2

@@ -1,0 +1,6 @@
+{
+  "type": "record",
+  "name": "UserDeleted",
+  "namespace": "ru.red.auth.avro",
+  "fields": []
+}

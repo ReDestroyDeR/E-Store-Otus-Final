@@ -6,14 +6,9 @@
 
 User Email **[STRING]**
 
-### Value *{AVRO}*
+### Value Type oneOf *{AVRO}*
 
-1. event **[ENUM]**
-   - CREATED
-   - UPDATED_EMAIL
-   - UPDATED_USERNAME
-   - DELETED
-
-2. previousEmail **[STRING]** *default: ""*
-3. previousUsername **[STRING]** *default: ""*
-4. username **[STRING]**
+1. UserCreated
+2. UserUpdatedEmail
+   1. previousEmail **[STRING]**
+3. UserDeleted *gets sent twice for no particular reason*

@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "UserUpdatedEmail",
+  "namespace": "ru.red.auth.avro",
+  "fields": [
+    {
+      "name": "previousEmail",
+      "type": "string"
+    }
+  ]
+}
