@@ -28,8 +28,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Mono<Order> createOrder(OrderDTO dto) {
-        if (dto.getTotalPrice() < 0)
-            return Mono.error(new IllegalArgumentException("Negative total price"));
+        if (dto.getItems() == null || dto.getItems().isEmpty())
+            return Mono.error(new IllegalArgumentException("No items provided"));
 
         var order = mapper.orderDTOToOrder(dto);
         order.setId(ObjectId.get().toHexString());

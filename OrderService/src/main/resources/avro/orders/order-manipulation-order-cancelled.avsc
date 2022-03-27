@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "OrderCancelled",
+  "namespace": "ru.red.order.avro",
+  "fields": [
+    {
+      "name": "totalPrice",
+      "type": "int"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "map",
+        "values": [
+          "null",
+          "ProductInfo"
+        ]
+      }
+    }
+  ]
+}
+

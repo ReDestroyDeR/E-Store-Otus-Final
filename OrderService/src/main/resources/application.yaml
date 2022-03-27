@@ -19,3 +19,6 @@ service:
   order:
     idempotency:
       ttl: 10s
+
+server:
+  port: 7006

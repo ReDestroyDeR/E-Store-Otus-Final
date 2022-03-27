@@ -15,8 +15,8 @@ import reactor.core.publisher.Mono;
 import ru.red.orderservice.controller.exceptions.BadRequestException;
 import ru.red.orderservice.controller.exceptions.NotFoundException;
 import ru.red.orderservice.domain.IdempotentOrder;
-import ru.red.orderservice.domain.Order;
 import ru.red.orderservice.dto.OrderDTO;
+import ru.red.orderservice.mapper.OrderMapper;
 import ru.red.orderservice.service.OrderOperationService;
 import ru.red.orderservice.service.OrderService;
 
@@ -26,39 +26,48 @@ import ru.red.orderservice.service.OrderService;
 public class OrderController {
     private final OrderService service;
     private final OrderOperationService idempotency;
+    private final OrderMapper orderMapper;
 
     @Autowired
-    public OrderController(OrderService service, OrderOperationService idempotency) {
+    public OrderController(OrderService service, OrderOperationService idempotency, OrderMapper orderMapper) {
         this.service = service;
         this.idempotency = idempotency;
+        this.orderMapper = orderMapper;
     }
 
     @PostMapping
-    public Mono<Order> createOrder(@RequestBody OrderDTO dto,
-                                   @RequestHeader("Idempotency-Key") String idempotencyKey) {
+    public Mono<OrderDTO> createOrder(@RequestBody OrderDTO dto,
+                                      @RequestHeader("Idempotency-Key") String idempotencyKey) {
         return idempotency.getByIdempotencyKey(idempotencyKey)
                 .switchIfEmpty(service.createOrder(dto)
                         .flatMap(response -> idempotency.commit(idempotencyKey, response))
                         .map(IdempotentOrder::getResponse))
                 .onErrorMap(e -> new BadRequestException(e.getMessage(), e))
-                .as(this::validation);
+                .as(this::validation)
+                .map(orderMapper::orderToOrderDTO);
     }
 
     @GetMapping("/id/{id}")
-    public Mono<Order> fetchOrderById(@PathVariable("id") String id) {
-        return service.fetchOrderById(id).as(this::validation);
+    public Mono<OrderDTO> fetchOrderById(@PathVariable("id") String id) {
+        return service.fetchOrderById(id)
+                .as(this::validation)
+                .map(orderMapper::orderToOrderDTO);
     }
 
     @GetMapping("/email/{email}")
-    public Flux<Order> fetchOrdersByEmail(@PathVariable("email") String address) {
-        return service.fetchOrdersByEmail(address).as(this::validation);
+    public Flux<OrderDTO> fetchOrdersByEmail(@PathVariable("email") String address) {
+        return service.fetchOrdersByEmail(address)
+                .as(this::validation)
+                .map(orderMapper::orderToOrderDTO);
     }
 
     @GetMapping("/price")
-    public Flux<Order> fetchOrdersByTotalPrice(
+    public Flux<OrderDTO> fetchOrdersByTotalPrice(
             @RequestParam(value = "start", required = false, defaultValue = "0") Integer totalPriceStart,
             @RequestParam(value = "end", required = false, defaultValue = "" + Integer.MAX_VALUE) Integer totalPriceEnd) {
-        return service.fetchOrdersByTotalPriceBetween(totalPriceStart, totalPriceEnd).as(this::validation);
+        return service.fetchOrdersByTotalPriceBetween(totalPriceStart, totalPriceEnd)
+                .as(this::validation)
+                .map(orderMapper::orderToOrderDTO);
     }
 
     private <T> Mono<T> validation(Mono<T> publisher) {

@@ -167,15 +167,13 @@
                 <artifactId>avro-maven-plugin</artifactId>
                 <version>${avro.version}</version>
                 <configuration>
-                    <sourceDirectory>src/main/resources/avro/streamprocessing/orders/</sourceDirectory>
+                    <sourceDirectory>src/main/resources/avro/orders/</sourceDirectory>
                     <includes>
-                        <include>order-manipulation-key.avsc</include>
-                        <include>order-manipulation-value.avsc</include>
-                        <include>product-ops-value.avsc</include>
-                        <include>product-table-value.avsc</include>
-                        <include>comment-key.avsc</include>
-                        <include>comment-value.avsc</include>
+                        <include>**/*.avsc</include>
                     </includes>
+                    <imports>
+                        ${project.basedir}/src/main/resources/avro/orders/product-info.avsc
+                    </imports>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
                 <executions>
@@ -196,19 +194,40 @@
                         <param>${schemaRegistryUrl}</param>
                     </schemaRegistryUrls>
                     <subjects>
-                        <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/orders/order-manipulation-key.avsc
-                        </order-acknowledgment-key>
-                        <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/orders/order-manipulation-value.avsc
-                        </order-acknowledgment-value>
+                        <order-manipulation-key>
+                            src/main/resources/avro/orders/order-manipulation-key.avsc
+                        </order-manipulation-key>
+                        <order-manipulation-order-placed>
+                            src/main/resources/avro/orders/order-manipulation-order-placed.avsc
+                        </order-manipulation-order-placed>
+                        <order-manipulation-order-cancelled>
+                            src/main/resources/avro/orders/order-manipulation-order-cancelled.avsc
+                        </order-manipulation-order-cancelled>
+                        <product-info>
+                            src/main/resources/avro/orders/product-info.avsc
+                        </product-info>
                         <product-table-value>
-                            src/main/resources/avro/streamprocessing/orders/product-table-value.avsc
+                            src/main/resources/avro/orders/product-table-value.avsc
                         </product-table-value>
                     </subjects>
-                    <outputDirectory>src/main/resources/avro/streamprocessing/orders/</outputDirectory>
+                    <references>
+                        <order-manipulation-order-placed>
+                            <reference>
+                                <name>ru.red.order.avro.ProductInfo</name>
+                                <subject>product-info</subject>
+                            </reference>
+                        </order-manipulation-order-placed>
+                        <order-manipulation-order-cancelled>
+                            <reference>
+                                <name>ru.red.order.avro.ProductInfo</name>
+                                <subject>product-info</subject>
+                            </reference>
+                        </order-manipulation-order-cancelled>
+                    </references>
+                    <outputDirectory>src/main/resources/avro/orders/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^order-manipulation-(key|value)$</pattern>
+                        <pattern>^order-manipulation-key$</pattern>
+                        <pattern>^order-manipulation-order-(placed|cancelled)$</pattern>
                         <pattern>^product-(table|ops)-value$</pattern>
                         <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>

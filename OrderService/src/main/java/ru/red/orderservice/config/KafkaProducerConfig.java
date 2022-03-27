@@ -9,8 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import streamprocessing.avro.KeyOrderManipulation;
-import streamprocessing.avro.ValueOrderManipulation;
+import ru.red.order.avro.OrderCancelled;
+import ru.red.order.avro.OrderManipulationKey;
+import ru.red.order.avro.OrderPlaced;
 
 import java.util.HashMap;
 
@@ -23,8 +24,7 @@ public class KafkaProducerConfig {
     private String schemaRegistryUrl;
 
 
-    @Bean("order-manipulation-producer-factory")
-    public ProducerFactory<KeyOrderManipulation, ValueOrderManipulation> orderProducerFactory() {
+    private <T> ProducerFactory<OrderManipulationKey, T> orderProducerFactory() {
         var props = new HashMap<String, Object>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
@@ -33,8 +33,13 @@ public class KafkaProducerConfig {
         return new DefaultKafkaProducerFactory<>(props);
     }
 
-    @Bean("order-manipulation-kafka-template")
-    public KafkaTemplate<KeyOrderManipulation, ValueOrderManipulation> orderKafkaTemplate() {
+    @Bean
+    public KafkaTemplate<OrderManipulationKey, OrderPlaced> orderPlacedTemplate() {
+        return new KafkaTemplate<>(orderProducerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<OrderManipulationKey, OrderCancelled> orderCancelledTemplate() {
         return new KafkaTemplate<>(orderProducerFactory());
     }
 }

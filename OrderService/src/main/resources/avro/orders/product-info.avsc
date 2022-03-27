@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "ProductInfo",
+  "namespace": "ru.red.order.avro",
+  "fields": [
+    {
+      "name": "units",
+      "type": "int"
+    },
+    {
+      "name": "pricePerUnit",
+      "type": "int"
+    },
+    {
+      "name": "totalPrice",
+      "type": "int"
+    }
+  ]
+}
