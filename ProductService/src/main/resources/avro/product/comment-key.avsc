@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "CommentKey",
-  "namespace": "ru.red.avro",
+  "namespace": "ru.red.product.avro",
   "fields": [
     {
       "name": "productName",

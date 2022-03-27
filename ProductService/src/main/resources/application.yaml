@@ -4,4 +4,4 @@ kafka:
   schemaRegistryUrl: "http://localhost:8081"
 
 server:
-  port: 8070
+  port: 7008

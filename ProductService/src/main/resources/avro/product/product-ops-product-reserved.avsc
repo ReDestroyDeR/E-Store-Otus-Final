@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "ProductReserved",
+  "namespace": "ru.red.product.avro",
+  "fields": [
+    {
+      "name": "reserved",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

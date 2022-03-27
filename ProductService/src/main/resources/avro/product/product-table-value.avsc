@@ -1,15 +1,22 @@
 {
   "type": "record",
   "name": "ProductTableValue",
-  "namespace": "ru.red.avro",
+  "namespace": "ru.red.product.avro",
   "fields": [
     {
       "name": "price",
-      "type": "int"
+      "type": "int",
+      "default": 0
     },
     {
       "name": "quantity",
-      "type": "int"
+      "type": "int",
+      "default": 0
+    },
+    {
+      "name": "reserved",
+      "type": "int",
+      "default": 0
     }
   ]
 }

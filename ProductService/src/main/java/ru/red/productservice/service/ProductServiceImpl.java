@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import ru.red.avro.ProductOpsValue;
+import ru.red.product.avro.ProductAdded;
+import ru.red.product.avro.ProductSubtracted;
 import ru.red.productservice.dto.ProductAdditionDTO;
 import ru.red.productservice.dto.ProductSubtractionDTO;
 import ru.red.productservice.producer.ProductProducer;
@@ -24,14 +25,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Mono<SendResult<String, ProductOpsValue>> updateProduct(ProductAdditionDTO productAddition) {
+    public Mono<SendResult<String, ProductAdded>> updateProduct(ProductAdditionDTO productAddition) {
         return producer.sendMessage(productAddition)
                 .doOnNext(log::info)
                 .doOnError(log::warn);
     }
 
     @Override
-    public Mono<SendResult<String, ProductOpsValue>> updateProduct(ProductSubtractionDTO productSubtraction) {
+    public Mono<SendResult<String, ProductSubtracted>> updateProduct(ProductSubtractionDTO productSubtraction) {
         return validation(productSubtraction.getName(), productSubtraction.getSubtraction())
                 .flatMap(ignore -> producer.sendMessage(productSubtraction))
                 .doOnNext(log::info)

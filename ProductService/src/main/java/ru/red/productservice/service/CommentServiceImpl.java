@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import ru.red.avro.CommentKey;
-import ru.red.avro.CommentValue;
+import ru.red.product.avro.CommentKey;
+import ru.red.product.avro.CommentValue;
 import ru.red.productservice.domain.Comment;
 import ru.red.productservice.producer.CommentProducer;
 

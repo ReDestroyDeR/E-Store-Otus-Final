@@ -137,11 +137,11 @@
                 <configuration>
                     <sourceDirectory>src/main/resources/avro/product/</sourceDirectory>
                     <includes>
-                        <include>product-ops-value.avsc</include>
-                        <include>product-table-value.avsc</include>
-                        <include>comment-key.avsc</include>
-                        <include>comment-value.avsc</include>
+                        <include>**/*.avsc</include>
                     </includes>
+                    <imports>
+                        <import>${project.basedir}/src/main/resources/avro/product/product-info.avsc</import>
+                    </imports>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
                 <executions>
@@ -162,11 +162,20 @@
                         <param>${schemaRegistryUrl}</param>
                     </schemaRegistryUrls>
                     <subjects>
-                        <product-ops-value>
-                            src/main/resources/avro/product/product-ops-value.avsc
-                        </product-ops-value>
+                        <product-ops-product-added>
+                            src/main/resources/avro/product/product-ops-product-added.avsc
+                        </product-ops-product-added>
+                        <product-ops-product-subtracted>
+                            src/main/resources/avro/product/product-ops-product-subtracted.avsc
+                        </product-ops-product-subtracted>
+                        <product-ops-product-reserved>
+                            src/main/resources/avro/product/product-ops-product-reserved.avsc
+                        </product-ops-product-reserved>
+                        <product-ops-product-unreserved>
+                            src/main/resources/avro/product/product-ops-product-unreserved.avsc
+                        </product-ops-product-unreserved>
                         <product-table-value>
-                            src/main/resources/avro/streamprocessing/orders/product-table-value.avsc
+                            src/main/resources/avro/product/product-table-value.avsc
                         </product-table-value>
                         <comment-key>
                             src/main/resources/avro/product/comment-key.avsc
@@ -177,7 +186,10 @@
                     </subjects>
                     <outputDirectory>src/main/resources/avro/product/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^product-(ops|table)-value$</pattern>
+                        <pattern>^order-manipulation-key$</pattern>
+                        <pattern>^order-manipulation-order-(placed|cancelled)$</pattern>
+                        <pattern>^product-ops-product-(added|reserved|subtracted|unreserved)$</pattern>
+                        <pattern>^product-table-value$</pattern>
                         <pattern>^comment-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>

@@ -1,5 +1,6 @@
 package ru.red.productservice.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -7,9 +8,10 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
-import ru.red.avro.ProductTableValue;
+import ru.red.product.avro.ProductTableValue;
 import ru.red.productservice.domain.Product;
 
+@Log4j2
 @Service
 public class ProductsStateServiceImpl implements ProductsStateService {
     private final StreamsBuilderFactoryBean factoryBean;

@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "ProductSubtracted",
+  "namespace": "ru.red.product.avro",
+  "fields": [
+    {
+      "name": "subtracted",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

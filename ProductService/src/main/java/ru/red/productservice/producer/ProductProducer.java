@@ -1,39 +1,42 @@
 package ru.red.productservice.producer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import ru.red.avro.ProductOpsValue;
+import ru.red.product.avro.ProductAdded;
+import ru.red.product.avro.ProductSubtracted;
 import ru.red.productservice.dto.ProductAdditionDTO;
 import ru.red.productservice.dto.ProductSubtractionDTO;
 
 @Component("product-producer")
 public class ProductProducer {
-    private final KafkaTemplate<String, ProductOpsValue> kafka;
+    private final KafkaTemplate<String, ProductAdded> addedTemplate;
+    private final KafkaTemplate<String, ProductSubtracted> subtractedTemplate;
     private final String productOpsTopicName;
 
     @Autowired
-    public ProductProducer(@Qualifier("product-ops-kafka-template") KafkaTemplate<String, ProductOpsValue> kafka,
+    public ProductProducer(KafkaTemplate<String, ProductAdded> addedTemplate,
+                           KafkaTemplate<String, ProductSubtracted> subtractedTemplate,
                            @Value("#{@newTopicConfig.PRODUCT_OPS_TOPIC_NAME}") String productOpsTopicName) {
-        this.kafka = kafka;
+        this.addedTemplate = addedTemplate;
+        this.subtractedTemplate = subtractedTemplate;
         this.productOpsTopicName = productOpsTopicName;
     }
 
-    public Mono<SendResult<String, ProductOpsValue>> sendMessage(ProductAdditionDTO addition) {
-        return sendMessage(addition.getName(), addition.getAddition(), addition.getPricePerUnit());
-    }
-
-    public Mono<SendResult<String, ProductOpsValue>> sendMessage(ProductSubtractionDTO subtraction) {
-        return sendMessage(subtraction.getName(), -subtraction.getSubtraction(), 0);
-    }
-
-    private Mono<SendResult<String, ProductOpsValue>> sendMessage(String name, Integer stockDelta, Integer price) {
+    public Mono<SendResult<String, ProductAdded>> sendMessage(ProductAdditionDTO addition) {
         return Mono.fromFuture(
-                kafka.send(productOpsTopicName, name, new ProductOpsValue(price, stockDelta)).completable()
+                addedTemplate.send(productOpsTopicName, addition.getName(),
+                        new ProductAdded(addition.getPricePerUnit(), addition.getAddition())).completable()
+        );
+    }
+
+    public Mono<SendResult<String, ProductSubtracted>> sendMessage(ProductSubtractionDTO subtraction) {
+        return Mono.fromFuture(
+                subtractedTemplate.send(productOpsTopicName, subtraction.getName(),
+                        new ProductSubtracted(subtraction.getSubtraction())).completable()
         );
     }
 }

@@ -7,8 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import ru.red.avro.CommentKey;
-import ru.red.avro.CommentValue;
+import ru.red.product.avro.CommentKey;
+import ru.red.product.avro.CommentValue;
 import ru.red.productservice.domain.Comment;
 
 @Component("comment-producer")

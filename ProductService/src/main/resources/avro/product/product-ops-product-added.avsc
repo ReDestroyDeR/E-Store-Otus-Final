@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "ProductAdded",
+  "namespace": "ru.red.product.avro",
+  "fields": [
+    {
+      "name": "pricePerUnit",
+      "type": "int"
+    },
+    {
+      "name": "added",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}

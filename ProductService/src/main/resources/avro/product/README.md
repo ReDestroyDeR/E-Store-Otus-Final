@@ -6,10 +6,21 @@
 
 Product Name **[STRING]**
 
-### Value *{AVRO}*
+### Value one of *{AVRO}*
 
-1. Price per unit **[UNSIGNED INTEGER]**
-2. Stock Delta **[INTEGER]**
+1. ProductAdded
+    1. Price per unit **[INTEGER]**
+    2. Added **[INTEGER]**
+2. ProductSubtracted
+    1. Subtracted **[INTEGER]**
+3. ProductReserved
+    1. Reserved **[INTEGER]**
+4. ProductUnreserved
+    1. Unreserved **[INTEGER]**
+5. ProductTableValue
+    1. price **[INTEGER]**
+    2. quantity **[INTEGER]**
+    3. reserved **[INTEGER]**
 
 ## Comments
 
