@@ -31,7 +31,7 @@ public class Order {
         return getItems().get(key);
     }
 
-    public ProductInfo put(String key, ProductInfo value) {
+    public ProductInfo put(CharSequence key, ProductInfo value) {
         setTotalPrice(getTotalPrice() + value.getTotalPrice());
         return getItems().put(key, value);
     }

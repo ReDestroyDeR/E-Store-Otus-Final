@@ -1,6 +1,7 @@
 package ru.red.orderservice.config;
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,11 +36,18 @@ public class KafkaStreamsConfig {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
         props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+        props.put(AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class);
         return new KafkaStreamsConfiguration(props);
+    }
+
+    @Bean("serde-config-table-record")
+    public Map<String, String> serdeTableRecordConfig() {
+        return Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl,
+                AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class.getName());
     }
 
     @Bean("serde-config")
     public Map<String, String> serdeConfig() {
-        return Collections.singletonMap("schema.registry.url", schemaRegistryUrl);
+        return Collections.singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
     }
 }

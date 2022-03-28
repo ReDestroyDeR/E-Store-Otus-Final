@@ -6,7 +6,6 @@ import ru.red.orderservice.dto.ProductInfoDTO;
 import ru.red.orderservice.mapper.OrderMapper;
 
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ru.red.orderservice.util.StringUtil.generateRandom;
@@ -23,7 +22,7 @@ public class OrderUtil {
                                 random.nextInt(100, 100_000)
                         ))
                         .limit(random.nextInt(1, 10))
-                        .collect(Collectors.toSet())
+                        .toList()
         );
         return ORDER_MAPPER.orderDTOToOrder(orderDTO);
     }

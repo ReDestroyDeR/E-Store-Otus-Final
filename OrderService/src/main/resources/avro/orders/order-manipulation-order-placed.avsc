@@ -11,9 +11,8 @@
       "name": "items",
       "type": {
         "type": "map",
-        "values": "ru.red.order.avro.ProductInfo"
+        "values": "ProductInfo"
       }
     }
   ]
 }
-

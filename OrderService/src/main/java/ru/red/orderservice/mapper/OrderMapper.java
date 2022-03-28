@@ -21,7 +21,7 @@ public class OrderMapper {
                 .map(entry -> new ProductInfoDTO(entry.getKey().toString(),
                         entry.getValue().getUnits(),
                         entry.getValue().getPricePerUnit()))
-                .collect(Collectors.toSet()));
+                .toList());
         return dto;
     }
 

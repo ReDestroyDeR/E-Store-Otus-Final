@@ -2,12 +2,12 @@ package ru.red.orderservice.dto;
 
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class OrderDTO {
     private String userAddress;
-    private Set<ProductInfoDTO> items;
+    private List<ProductInfoDTO> items;
 
     public Integer getTotalPrice() {
         if (items == null || items.isEmpty()) {

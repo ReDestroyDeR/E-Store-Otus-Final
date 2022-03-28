@@ -14,14 +14,17 @@ import ru.red.orderservice.repository.OrderRepository;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository repository;
+    private final ProductStateService productStateService;
     private final OrderMapper mapper;
     private final OrderProducer producer;
 
     @Autowired
     public OrderServiceImpl(OrderRepository repository,
+                            ProductStateService productStateService,
                             OrderMapper mapper,
                             OrderProducer producer) {
         this.repository = repository;
+        this.productStateService = productStateService;
         this.mapper = mapper;
         this.producer = producer;
     }
@@ -30,6 +33,23 @@ public class OrderServiceImpl implements OrderService {
     public Mono<Order> createOrder(OrderDTO dto) {
         if (dto.getItems() == null || dto.getItems().isEmpty())
             return Mono.error(new IllegalArgumentException("No items provided"));
+
+        try {
+            dto.setItems(dto.getItems()
+                    .stream()
+                    .map(productInfoDTO -> {
+                        var productInfo = productStateService.getByName(productInfoDTO.getName());
+                        if (productInfo.getQuantity() < productInfoDTO.getQuantity())
+                            throw new IllegalArgumentException("Not enough in stock");
+
+                        productInfo.setQuantity(productInfoDTO.getQuantity());
+                        return productInfo;
+                    })
+                    .toList());
+        } catch (Throwable e) {
+            return Mono.error(e);
+        }
+
 
         var order = mapper.orderDTOToOrder(dto);
         order.setId(ObjectId.get().toHexString());

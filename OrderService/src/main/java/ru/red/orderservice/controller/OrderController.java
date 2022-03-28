@@ -42,7 +42,9 @@ public class OrderController {
                 .switchIfEmpty(service.createOrder(dto)
                         .flatMap(response -> idempotency.commit(idempotencyKey, response))
                         .map(IdempotentOrder::getResponse))
-                .onErrorMap(e -> new BadRequestException(e.getMessage(), e))
+                .onErrorMap(IllegalArgumentException.class, e -> new BadRequestException(e.getMessage(), e))
+                .doOnNext(log::info)
+                .doOnError(log::info)
                 .as(this::validation)
                 .map(orderMapper::orderToOrderDTO);
     }

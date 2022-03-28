@@ -59,14 +59,19 @@ public class OrderProcessor {
                         .getSchema().getFullName().equals(OrderPlaced.getClassSchema().getFullName()))
                 .mapValues(bytes -> ORDER_PLACED_SERDE.deserializer().deserialize(TOPIC_NAME, bytes.get()))
                 .split(Named.as("order-validation-split"))
-                .branch(((key, value) -> value.getItems()
+                .branch(((key, value) -> {
+                    // If any quantity of position in order is greater than in stock
+                    try {
+                        return value.getItems()
                                 .entrySet()
                                 .stream()
-                                .anyMatch(entry ->
-                                        stateService.getByNameWithoutComments(entry.getKey().toString())
-                                                .getQuantity() < entry.getValue().getUnits())),
-                        Branched.as("invalid-orders")) // If any quantity of position in order is greater than in stock
-                .defaultBranch(Branched.as("valid-orders"));
+                                .anyMatch(entry -> stateService.getByNameWithoutComments(entry.getKey().toString())
+                                        .getQuantity() < entry.getValue().getUnits());
+                    } catch (NullPointerException ignored) { // Or product doesn't exist
+                        return true;
+                    }
+                }), Branched.withConsumer(stream -> stream.to("invalid-orders"), "invalid-orders"))
+                .defaultBranch(Branched.withConsumer(stream -> stream.to("valid-orders"), "valid-orders"));
 
         // TODO: Order Cancelled processing
 //        bytesStreamWithoutTombstones.filter((key, bytes) -> GENERIC_VALUE_SERDE.deserializer()
