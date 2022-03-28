@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "OrderAcknowledgmentKey",
+  "namespace": "ru.red.billing.avro",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string"
+    },
+    {
+      "name": "email",
+      "type": "string"
+    }
+  ]
+}

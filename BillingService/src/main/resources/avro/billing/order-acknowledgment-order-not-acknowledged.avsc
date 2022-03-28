@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "OrderNotAcknowledged",
+  "namespace": "ru.red.billing.avro",
+  "fields": [
+    {
+      "name": "totalPrice",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "name": "userBalance",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "ru.red.order.avro.ProductInfo"
+        }
+      }
+    }
+  ]
+}

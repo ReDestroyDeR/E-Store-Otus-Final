@@ -138,13 +138,13 @@
                 <artifactId>avro-maven-plugin</artifactId>
                 <version>${avro.version}</version>
                 <configuration>
-                    <sourceDirectory>src/main/resources/avro/streamprocessing/billing/</sourceDirectory>
+                    <sourceDirectory>src/main/resources/avro/billing/</sourceDirectory>
                     <includes>
-                        <include>order-manipulation-key.avsc</include>
-                        <include>order-manipulation-value.avsc</include>
-                        <include>order-acknowledgment-key.avsc</include>
-                        <include>order-acknowledgment-value.avsc</include>
+                        <include>**/*.avsc*</include>
                     </includes>
+                    <imports>
+                        ${project.basedir}/src/main/resources/avro/billing/product-info.avsc
+                    </imports>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
                 <executions>
@@ -166,22 +166,35 @@
                     </schemaRegistryUrls>
                     <subjects>
                         <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/billing/order-manipulation-key.avsc
+                            src/main/resources/avro/billing/order-acknowledgment-key.avsc
                         </order-acknowledgment-key>
-                        <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/billing/order-manipulation-value.avsc
-                        </order-acknowledgment-value>
-                        <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/billing/order-acknowledgment-key.avsc
-                        </order-acknowledgment-key>
-                        <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/billing/order-acknowledgment-value.avsc
-                        </order-acknowledgment-value>
+                        <order-acknowledgment-order-acknowledged>
+                            src/main/resources/avro/billing/order-acknowledgment-order-acknowledged.avsc
+                        </order-acknowledgment-order-acknowledged>
+                        <order-acknowledgment-order-not-acknowledged>
+                            src/main/resources/avro/billing/order-acknowledgment-order-not-acknowledged.avsc
+                        </order-acknowledgment-order-not-acknowledged>
                     </subjects>
-                    <outputDirectory>src/main/resources/avro/streamprocessing/billing/</outputDirectory>
+                    <references>
+                        <order-acknowledgment-order-acknowledged>
+                            <reference>
+                                <name>ru.red.order.avro.ProductInfo</name>
+                                <subject>product-info</subject>
+                            </reference>
+                        </order-acknowledgment-order-acknowledged>
+                        <order-acknowledgment-order-not-acknowledged>
+                            <reference>
+                                <name>ru.red.order.avro.ProductInfo</name>
+                                <subject>product-info</subject>
+                            </reference>
+                        </order-acknowledgment-order-not-acknowledged>
+                    </references>
+                    <outputDirectory>src/main/resources/avro/billing/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^order-manipulation-(key|value)$</pattern>
-                        <pattern>^order-acknowledgment-(key|value)$</pattern>
+                        <pattern>^order-manipulation-(key|order-placed|order-cancelled)$</pattern>
+                        <pattern>^order-acknowledgment-(key|order-acknowledged|order-not-acknowledged)$</pattern>
+                        <pattern>^product-info$</pattern>
+                        <pattern>^product-table-value$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>
