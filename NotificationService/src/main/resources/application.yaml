@@ -1,5 +1,6 @@
 kafka:
   bootstrapAddress: "localhost:9092"
+  applicationId: "notification-service"
   schema:
     registry:
       url: "http://localhost:8081"
@@ -11,3 +12,6 @@ spring:
       port: 27017
       database: notifications
       authentication-database: notifications
+
+server:
+  port: 7005

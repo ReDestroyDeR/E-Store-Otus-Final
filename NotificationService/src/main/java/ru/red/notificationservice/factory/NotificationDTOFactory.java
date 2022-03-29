@@ -4,14 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import ru.red.billing.avro.OrderAcknowledged;
+import ru.red.billing.avro.OrderAcknowledgmentKey;
+import ru.red.billing.avro.OrderNotAcknowledged;
 import ru.red.notificationservice.dto.NotificationDTO;
-import streamprocessing.avro.OrderAckStatus;
-import streamprocessing.avro.ValueOrderAcknowledgment;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.time.Instant;
+
+import static java.sql.Date.from;
 
 @Component
 public class NotificationDTOFactory {
@@ -29,26 +31,34 @@ public class NotificationDTOFactory {
                 .replaceAll("(\n *)|( *\n)", "\n");
     }
 
-    public NotificationDTO createDto(String address, ValueOrderAcknowledgment value) {
+    public NotificationDTO createDto(OrderAcknowledgmentKey key, OrderAcknowledged value) {
         var dto = new NotificationDTO();
-        dto.setUserAddress(address);
-        var username = address.split("@")[0];
-        dto.setContents(value.getEvent() == OrderAckStatus.ACK
-                        ? ackHtml.formatted(
-                        address,
-                        value.getOrderId(),
-                        value.getOrderTotalPrice(),
-                        value.getUserBalance()
-                )
-                        : nackHtml.formatted(
-                        address,
-                        value.getOrderId(),
-                        value.getOrderTotalPrice(),
+        dto.setUserAddress(key.getEmail().toString());
+        dto.setContents(ackHtml.formatted(
+                        key.getEmail().toString().split("@")[0],
+                        key.getOrderId(),
+                        value.getTotalPrice(),
                         value.getUserBalance(),
-                        Math.abs(value.getUserBalance() - value.getOrderTotalPrice())
+                        value.getItems().toString()
                 )
         );
-        dto.setTimestamp(Date.from(Instant.now()));
+        dto.setTimestamp(from(Instant.now()));
+        return dto;
+    }
+
+    public NotificationDTO createDto(OrderAcknowledgmentKey key, OrderNotAcknowledged value) {
+        var dto = new NotificationDTO();
+        dto.setUserAddress(key.getEmail().toString());
+        dto.setContents(nackHtml.formatted(
+                        key.getEmail().toString().split("@")[0],
+                        key.getOrderId(),
+                        value.getTotalPrice(),
+                        value.getUserBalance(),
+                        value.getTotalPrice() - value.getUserBalance(),
+                        value.getItems().toString()
+                )
+        );
+        dto.setTimestamp(from(Instant.now()));
         return dto;
     }
 }

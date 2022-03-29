@@ -97,6 +97,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-avro-serde</artifactId>
+            <version>${confluent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -143,12 +153,14 @@
                 <artifactId>avro-maven-plugin</artifactId>
                 <version>${avro.version}</version>
                 <configuration>
-                    <sourceDirectory>${basedir}/src/main/resources/avro/streamprocessing/notifications/
+                    <sourceDirectory>${basedir}/src/main/resources/avro/notifications/
                     </sourceDirectory>
                     <includes>
-                        <include>order-acknowledgment-key.avsc</include>
-                        <include>order-acknowledgment-value.avsc</include>
+                        <include>**/*.avsc</include>
                     </includes>
+                    <imports>
+                        ${project.basedir}/src/main/resources/avro/notifications/product-info.avsc
+                    </imports>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
                 <executions>
@@ -169,16 +181,12 @@
                         <param>${schemaRegistryUrl}</param>
                     </schemaRegistryUrls>
                     <subjects>
-                        <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/notifications/order-acknowledgment-key.avsc
-                        </order-acknowledgment-key>
-                        <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/notifications/order-acknowledgment-value.avsc
-                        </order-acknowledgment-value>
                     </subjects>
-                    <outputDirectory>src/main/resources/avro/streamprocessing/notifications/</outputDirectory>
+                    <outputDirectory>src/main/resources/avro/notifications/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^order-acknowledgment-(key|value)$</pattern>
+                        <pattern>^order-acknowledgment-key$</pattern>
+                        <pattern>^order-acknowledgment-order-(not-)?acknowledged$</pattern>
+                        <pattern>^product-info$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>
