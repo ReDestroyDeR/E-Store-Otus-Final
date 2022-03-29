@@ -26,3 +26,6 @@ auth:
 kafka:
   bootstrapServers: "localhost:9092"
   schemaRegistryUrl: "http://localhost:8081"
+
+server:
+  port: 7009

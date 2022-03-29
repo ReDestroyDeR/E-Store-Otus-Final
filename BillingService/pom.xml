@@ -195,6 +195,7 @@
                         <pattern>^order-acknowledgment-(key|order-acknowledged|order-not-acknowledged)$</pattern>
                         <pattern>^product-info$</pattern>
                         <pattern>^product-table-value$</pattern>
+                        <pattern>^user-manipulation-user-(created|updated-email|deleted)$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>

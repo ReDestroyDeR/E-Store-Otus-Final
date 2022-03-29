@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 import ru.red.auth.avro.UserCreated;
 import ru.red.auth.avro.UserDeleted;
 import ru.red.auth.avro.UserUpdatedEmail;
-import ru.red.authenticationservice.dto.UserIdentityDTO;
 
 @Log4j2
 @SuppressWarnings("ClassCanBeRecord")
@@ -17,37 +16,37 @@ import ru.red.authenticationservice.dto.UserIdentityDTO;
 public class UserManipulationProducer {
     private static final String TOPIC_NAME = "user-manipulation";
 
-    private final KafkaTemplate<String, UserCreated> userCreatedTemplate;
-    private final KafkaTemplate<String, UserUpdatedEmail> userUpdatedEmailTemplate;
-    private final KafkaTemplate<String, UserDeleted> userDeletedTemplate;
+    private final KafkaTemplate<Long, UserCreated> userCreatedTemplate;
+    private final KafkaTemplate<Long, UserUpdatedEmail> userUpdatedEmailTemplate;
+    private final KafkaTemplate<Long, UserDeleted> userDeletedTemplate;
 
     @Autowired
-    public UserManipulationProducer(KafkaTemplate<String, UserCreated> userCreatedTemplate,
-                                    KafkaTemplate<String, UserUpdatedEmail> userUpdatedEmailTemplate,
-                                    KafkaTemplate<String, UserDeleted> userDeletedTemplate) {
+    public UserManipulationProducer(KafkaTemplate<Long, UserCreated> userCreatedTemplate,
+                                    KafkaTemplate<Long, UserUpdatedEmail> userUpdatedEmailTemplate,
+                                    KafkaTemplate<Long, UserDeleted> userDeletedTemplate) {
         this.userCreatedTemplate = userCreatedTemplate;
         this.userUpdatedEmailTemplate = userUpdatedEmailTemplate;
         this.userDeletedTemplate = userDeletedTemplate;
     }
 
-    public Mono<SendResult<String, UserCreated>> created(UserIdentityDTO identityDTO) {
+    public Mono<SendResult<Long, UserCreated>> created(Long id, String email) {
         return Mono.fromFuture(
-                userCreatedTemplate.send(TOPIC_NAME, identityDTO.getEmail(), new UserCreated())
+                userCreatedTemplate.send(TOPIC_NAME, id, new UserCreated(email))
                         .completable()
         );
     }
 
-    public Mono<SendResult<String, UserUpdatedEmail>> updatedEmail(UserIdentityDTO identityDTO, String previousEmail) {
+    public Mono<SendResult<Long, UserUpdatedEmail>> updatedEmail(Long id, String email, String previousEmail) {
         return Mono.fromFuture(
-                userUpdatedEmailTemplate.send(TOPIC_NAME, identityDTO.getEmail(), new UserUpdatedEmail(previousEmail))
+                userUpdatedEmailTemplate.send(TOPIC_NAME, id, new UserUpdatedEmail(email, previousEmail))
                         .completable()
         );
     }
 
     // FIXME: Deleted messages get produced twice. They're idempotent so it should be alright // NOSONAR
-    public Mono<SendResult<String, UserDeleted>> deleted(UserIdentityDTO identityDTO) {
+    public Mono<SendResult<Long, UserDeleted>> deleted(Long id, String email) {
         return Mono.fromFuture(
-                userDeletedTemplate.send(TOPIC_NAME, identityDTO.getEmail(), new UserDeleted())
+                userDeletedTemplate.send(TOPIC_NAME, id, new UserDeleted(email))
                         .completable()
         );
     }

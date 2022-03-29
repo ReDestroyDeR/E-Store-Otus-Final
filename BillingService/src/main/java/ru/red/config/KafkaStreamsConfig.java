@@ -36,14 +36,19 @@ public class KafkaStreamsConfig {
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class);
-        properties.put("schema.registry.url", schemaRegistryUrl);
+        properties.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
 
         return new KafkaStreamsConfiguration(properties);
     }
 
+    @Bean("serde-config-topic-record")
+    public Map<String, String> serdeTopicRecordConfig(@Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
+        return Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl,
+                AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class.getName());
+    }
+
     @Bean("serde-config")
     public Map<String, String> serdeConfig(@Value("${kafka.schemaRegistryUrl}") String schemaRegistryUrl) {
-        return Map.of("schema.registry.url", schemaRegistryUrl,
-                AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, TopicRecordNameStrategy.class.getName());
+        return Map.of(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
     }
 }

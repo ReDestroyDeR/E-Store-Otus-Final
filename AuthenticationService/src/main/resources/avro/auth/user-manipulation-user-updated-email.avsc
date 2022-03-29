@@ -4,6 +4,10 @@
   "namespace": "ru.red.auth.avro",
   "fields": [
     {
+      "name": "email",
+      "type": "string"
+    },
+    {
       "name": "previousEmail",
       "type": "string"
     }

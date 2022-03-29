@@ -42,15 +42,15 @@ public class NewOrderProcessor {
 
     @Autowired
     public NewOrderProcessor(UserBillingService billingService,
-                             @Qualifier("serde-config") Map<String, String> serdeConfig) {
+                             @Qualifier("serde-config-topic-record") Map<String, String> serdeTopicRecordConfig) {
         this.billingService = billingService;
-        ORDER_MANIPULATION_KEY_SERDE.configure(serdeConfig, true);
-        ORDER_PLACED_SERDE.configure(serdeConfig, false);
-        ORDER_CANCELLED_SERDE.configure(serdeConfig, false);
+        ORDER_MANIPULATION_KEY_SERDE.configure(serdeTopicRecordConfig, true);
+        ORDER_PLACED_SERDE.configure(serdeTopicRecordConfig, false);
+        ORDER_CANCELLED_SERDE.configure(serdeTopicRecordConfig, false);
 
-        ORDER_ACKNOWLEDGMENT_KEY_SERDE.configure(serdeConfig, true);
-        ORDER_ACKNOWLEDGED_SERDE.configure(serdeConfig, false);
-        ORDER_NOT_ACKNOWLEDGED_SERDE.configure(serdeConfig, false);
+        ORDER_ACKNOWLEDGMENT_KEY_SERDE.configure(serdeTopicRecordConfig, true);
+        ORDER_ACKNOWLEDGED_SERDE.configure(serdeTopicRecordConfig, false);
+        ORDER_NOT_ACKNOWLEDGED_SERDE.configure(serdeTopicRecordConfig, false);
     }
 
     @Autowired
@@ -59,7 +59,7 @@ public class NewOrderProcessor {
                         Consumed.with(ORDER_MANIPULATION_KEY_SERDE, ORDER_PLACED_SERDE))
                 .split()
                 .branch((key, value) ->
-                                Boolean.TRUE.equals(billingService.findByEmail(key.getEmail().toString())
+                                Boolean.TRUE.equals(billingService.findById(key.getUserId())
                                         .publishOn(Schedulers.boundedElastic())
                                         .map(billing -> billing.getBalance() - value.getTotalPrice() >= 0)
                                         .defaultIfEmpty(false)
@@ -68,13 +68,13 @@ public class NewOrderProcessor {
                         Branched.withConsumer(stream -> stream
                                         .map((key, value) -> {
                                             var balance =
-                                                    billingService.removeFundsFromUser(key.getEmail().toString(),
+                                                    billingService.removeFundsFromUser(key.getUserId(),
                                                                     value.getTotalPrice())
                                                             .publishOn(Schedulers.boundedElastic())
                                                             .map(UserBilling::getBalance)
                                                             .block();
                                             return new KeyValue<>(
-                                                    new OrderAcknowledgmentKey(key.getOrderId(), key.getEmail()),
+                                                    new OrderAcknowledgmentKey(key.getOrderId(), key.getUserId()),
                                                     new OrderAcknowledged(value.getTotalPrice(), balance, value.getItems()));
                                         })
                                         .to(ORDER_ACKNOWLEDGMENT_TOPIC_NAME,
@@ -83,13 +83,13 @@ public class NewOrderProcessor {
                 .defaultBranch(Branched.withConsumer(stream -> stream
                                 .map((key, value) -> {
                                     // Code duplication from predicate
-                                    var balance = billingService.findByEmail(key.getEmail().toString())
+                                    var balance = billingService.findById(key.getUserId())
                                             .publishOn(Schedulers.boundedElastic())
                                             .map(UserBilling::getBalance)
                                             .onErrorReturn(0)
                                             .block();
                                     return new KeyValue<>(
-                                            new OrderAcknowledgmentKey(key.getOrderId(), key.getEmail()),
+                                            new OrderAcknowledgmentKey(key.getOrderId(), key.getUserId()),
                                             new OrderNotAcknowledged(value.getTotalPrice(), balance, value.getItems()));
                                 })
                                 .to(ORDER_ACKNOWLEDGMENT_TOPIC_NAME,

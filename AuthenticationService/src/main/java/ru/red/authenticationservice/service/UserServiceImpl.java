@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
                 .onErrorMap(BadRequestException::new)
                 .doOnSuccess(s -> log.info("Account created [{}] {}", s.getId(), usersRecord.getEmail()))
                 .doOnError(e -> log.info("Account creation failed for {} {}", usersRecord.getEmail(), e.getMessage()))
-                .flatMap(usersRec -> producer.created(userMapper.usersRecordToUserIdentityDTO(usersRec))
+                .flatMap(usersRec -> producer.created(usersRec.getId(), usersRecord.getEmail())
                         .thenReturn(usersRec));
     }
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
                         email,
                         e.getMessage()
                 ))
-                .flatMap(user -> producer.updatedEmail(userMapper.usersRecordToUserIdentityDTO(user), dto.getEmail())
+                .flatMap(user -> producer.updatedEmail(user.getId(), user.getEmail(), dto.getEmail())
                         .thenReturn(user));
     }
 
@@ -116,13 +116,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<Void> delete(UserDetachedDTO userDetachedDTO) {
         return validatePassword(userDetachedDTO)
-                .flatMap(user -> repository.deleteUser(user.getId()))
-                .flatMap(i -> i == 1
-                        ? Mono.just(i)
-                        : Mono.error(new NotFoundException("Can't delete user " + userDetachedDTO.getEmail())))
+                .flatMap(user ->
+                        repository.deleteUser(user.getId())
+                                .flatMap(i -> i == 1
+                                        ? Mono.just(i)
+                                        : Mono.error(new NotFoundException("Can't delete user " + userDetachedDTO.getEmail())))
+                                .then(producer.deleted(user.getId(), user.getEmail()))
+                )
                 .doOnSuccess(s -> log.info("Successfully deleted user {}", userDetachedDTO.getEmail()))
                 .doOnError(e -> log.info("Failed deleting user {} {}", userDetachedDTO.getEmail(), e.getMessage()))
-                .then(producer.deleted(userMapper.userDetachedDTOToUserIdentityDTO(userDetachedDTO)))
                 .then();
     }
 
