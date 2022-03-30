@@ -56,9 +56,9 @@ public class OrderController {
                 .map(orderMapper::orderToOrderDTO);
     }
 
-    @GetMapping("/email/{email}")
-    public Flux<OrderDTO> fetchOrdersByEmail(@PathVariable("email") String address) {
-        return service.fetchOrdersByEmail(address)
+    @GetMapping("/user/{userId}")
+    public Flux<OrderDTO> fetchOrdersByEmail(@PathVariable("userId") Long userId) {
+        return service.fetchOrdersByUserId(userId)
                 .as(this::validation)
                 .map(orderMapper::orderToOrderDTO);
     }

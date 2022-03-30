@@ -16,7 +16,7 @@ public class OrderUtil {
     public static Order createRandom() {
         var orderDTO = new OrderDTO();
         var random = new Random();
-        orderDTO.setUserAddress(EmailUtil.generateRandomEmail());
+        orderDTO.setUserId(random.nextLong(1, 1000));
         orderDTO.setItems(Stream.generate(() -> new ProductInfoDTO(generateRandom(random.nextInt(3, 10)),
                                 random.nextInt(1, 10),
                                 random.nextInt(100, 100_000)
@@ -27,9 +27,9 @@ public class OrderUtil {
         return ORDER_MAPPER.orderDTOToOrder(orderDTO);
     }
 
-    public static Order createRandomWithAddress(String address) {
+    public static Order createRandomWithAddress(Long userId) {
         var order = createRandom();
-        order.setUserAddress(address);
+        order.setUserId(userId);
         return order;
     }
 }

@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "Address",
+  "namespace": "ru.red.delivery.avro",
+  "fields": [
+    {
+      "name": "city",
+      "type": "string"
+    },
+    {
+      "name": "street",
+      "type": "string"
+    },
+    {
+      "name": "building",
+      "type": "string"
+    },
+    {
+      "name": "apartment",
+      "type": "int"
+    }
+  ]
+}

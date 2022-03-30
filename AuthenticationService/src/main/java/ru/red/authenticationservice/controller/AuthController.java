@@ -12,6 +12,7 @@ import ru.red.authenticationservice.dto.UserDetachedDTO;
 import ru.red.authenticationservice.exception.BadEmailException;
 import ru.red.authenticationservice.exception.BadPasswordException;
 import ru.red.authenticationservice.exception.BadRequestException;
+import ru.red.authenticationservice.jooq.tables.records.UsersRecord;
 import ru.red.authenticationservice.service.UserService;
 
 import static ru.red.authenticationservice.util.EmailUtil.isEmail;
@@ -50,16 +51,16 @@ public class AuthController {
      * Registration endpoint
      *
      * @param userDetachedDTO user credentials
-     * @return 200 {@link Void} User has been created<br>
+     * @return 200 {@link Long} Registered User id<br>
      * 400 {@link BadRequestException} Email is already occupied
      */
     @PostMapping("register")
-    public Mono<Void> register(@RequestBody UserDetachedDTO userDetachedDTO) {
+    public Mono<Long> register(@RequestBody UserDetachedDTO userDetachedDTO) {
         if (!isEmail(userDetachedDTO.getEmail())) {
             return Mono.error(new BadEmailException());
         }
 
-        return userService.registerUser(userDetachedDTO).then();
+        return userService.registerUser(userDetachedDTO).map(UsersRecord::getId);
     }
 
     @PostMapping("change-email")

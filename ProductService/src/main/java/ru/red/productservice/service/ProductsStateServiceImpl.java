@@ -48,6 +48,9 @@ public class ProductsStateServiceImpl implements ProductsStateService {
         }
 
         var value = store.get(name);
+        if (value == null) {
+            return null;
+        }
         var product = new Product();
         product.setName(name);
         product.setQuantity(value.getQuantity());

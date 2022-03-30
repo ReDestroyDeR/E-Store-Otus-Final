@@ -26,7 +26,7 @@ public class OrderProducer {
     public Flux<SendResult<OrderManipulationKey, OrderPlaced>> sendCreatedMessage(Flux<Order> order) {
         return order.flatMap(o -> Mono.fromFuture(
                 placedTemplate.send("order-manipulation",
-                                new OrderManipulationKey(o.getId(), o.getUserAddress()),
+                                new OrderManipulationKey(o.getId(), o.getUserId()),
                                 new OrderPlaced(o.getTotalPrice(), o.getItems()))
                         .completable()
         ));

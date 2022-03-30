@@ -31,7 +31,7 @@ public class OrderAcknowledgmentsProcessor {
 
     private static final Serde<GenericRecord> GENERIC_VALUE_SERDE = new GenericAvroSerde();
 
-    private static final String ACKNOWLEDGMENT_TOPIC = "order-acknowledgments";
+    private static final String ACKNOWLEDGMENT_TOPIC = "order-acknowledgment";
 
     private final NotificationService service;
     private final NotificationDTOFactory dtoFactory;

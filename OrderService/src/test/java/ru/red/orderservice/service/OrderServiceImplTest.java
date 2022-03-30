@@ -49,7 +49,7 @@ class OrderServiceImplTest {
         var order = OrderUtil.createRandom();
         var dto = mapper.orderToOrderDTO(order);
         StepVerifier.create(service.createOrder(dto))
-                .expectNextMatches(o -> o.getUserAddress().equals(order.getUserAddress()) &&
+                .expectNextMatches(o -> o.getUserId().equals(order.getUserId()) &&
                         o.getTotalPrice().equals(order.getTotalPrice()))
                 .expectComplete()
                 .verify();
@@ -62,10 +62,10 @@ class OrderServiceImplTest {
                 .flatMap(service::createOrder);
     }
 
-    private Flux<Order> createOrders(int count, String address) {
+    private Flux<Order> createOrders(int count, Long userId) {
         return Flux.generate(sink -> sink.next(
                                 mapper.orderToOrderDTO(
-                                        OrderUtil.createRandomWithAddress(address)
+                                        OrderUtil.createRandomWithAddress(userId)
                                 )
                         )
                 )
@@ -77,19 +77,19 @@ class OrderServiceImplTest {
     @Test
     void fetchNotificationsByAddress() {
         var count = 10;
-        var email = "test@example.org"; // Using .org since util uses .com
+        var userId = 732L;
         StepVerifier.create(createOrders(count))
                 .expectNextCount(count)
                 .expectComplete()
                 .verify();
 
-        var orders = createOrders(count / 2, email).cache(count);
+        var orders = createOrders(count / 2, userId).cache(count);
         StepVerifier.create(orders)
                 .expectNextCount(count / 2)
                 .expectComplete()
                 .verify();
 
-        StepVerifier.create(service.fetchOrdersByEmail(email))
+        StepVerifier.create(service.fetchOrdersByUserId(userId))
                 .expectNextMatches(n -> Boolean.TRUE.equals(
                         orders.any(notification -> notification.equals(n)).block()))
                 .expectNextCount(count / 2 - 1)

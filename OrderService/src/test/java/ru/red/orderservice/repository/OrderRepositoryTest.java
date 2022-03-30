@@ -38,7 +38,7 @@ class OrderRepositoryTest {
                 .verify();
 
         assert order.equals(repository
-                .findAllByUserAddress(order.getUserAddress())
+                .findAllByUserId(order.getUserId())
                 .blockFirst());
     }
 }

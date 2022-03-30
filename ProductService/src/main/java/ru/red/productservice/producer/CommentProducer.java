@@ -18,7 +18,7 @@ public class CommentProducer {
 
     @Autowired
     public CommentProducer(@Qualifier("comment-kafka-template") KafkaTemplate<CommentKey, CommentValue> kafka,
-                           @Value("#(@topicConfig.COMMENTS_TOPIC_NAME)") String commentsTopicName) {
+                           @Value("#{@newTopicConfig.COMMENTS_TOPIC_NAME}") String commentsTopicName) {
         this.kafka = kafka;
         this.commentsTopicName = commentsTopicName;
     }

@@ -15,7 +15,7 @@ public class Order {
     @MongoId(FieldType.OBJECT_ID)
     private String id;
 
-    private String userAddress;
+    private Long userId;
     private Map<CharSequence, ProductInfo> items;
     private Integer totalPrice;
 

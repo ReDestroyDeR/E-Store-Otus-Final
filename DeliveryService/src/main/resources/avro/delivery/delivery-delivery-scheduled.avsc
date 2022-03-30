@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "DeliveryScheduled",
+  "namespace": "ru.red.delivery.avro",
+  "fields": [
+    {
+      "name": "address",
+      "type": "ru.red.delivery.avro.Address"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "map",
+        "values": "ru.red.order.avro.ProductInfo"
+      }
+    }
+  ]
+}

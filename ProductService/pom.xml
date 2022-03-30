@@ -141,6 +141,8 @@
                     </includes>
                     <imports>
                         <import>${project.basedir}/src/main/resources/avro/product/product-info.avsc</import>
+                        <import>${project.basedir}/src/main/resources/avro/product/delivery-status.avsc</import>
+                        <import>${project.basedir}/src/main/resources/avro/product/address.avsc</import>
                     </imports>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
@@ -191,6 +193,9 @@
                         <pattern>^product-ops-product-(added|reserved|subtracted|unreserved)$</pattern>
                         <pattern>^product-table-value$</pattern>
                         <pattern>^comment-(key|value)$</pattern>
+                        <pattern>^order-acknowledgment-key$</pattern>
+                        <pattern>^delivery-(aggregate|status)$</pattern>
+                        <pattern>^address$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>

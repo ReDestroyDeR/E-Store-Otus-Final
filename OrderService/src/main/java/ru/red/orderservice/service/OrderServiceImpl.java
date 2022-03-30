@@ -59,8 +59,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Flux<Order> fetchOrdersByEmail(String address) {
-        return repository.findAllByUserAddress(address);
+    public Flux<Order> fetchOrdersByUserId(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
     @Override

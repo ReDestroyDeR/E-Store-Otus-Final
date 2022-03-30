@@ -22,6 +22,16 @@ public class UserBillingServiceImpl implements UserBillingService {
     }
 
     @Override
+    public Mono<UserBilling> create(UserBilling domain) {
+        if (domain.getBalance() == null)
+            domain.setBalance(0);
+        return repository.save(domain)
+                .onErrorMap(DataAccessException.class, BadRequestException::new)
+                .doOnSuccess(s -> log.info("Created User [{}] {}", s.getId(), s.getEmail()))
+                .doOnError(e -> log.info("Failed creating User {} {}", domain.getEmail(), e.getMessage()));
+    }
+
+    @Override
     public Mono<UserBilling> create(UserIdentityDTO dto) {
         var domain = new UserBilling();
         domain.setEmail(dto.getEmail());

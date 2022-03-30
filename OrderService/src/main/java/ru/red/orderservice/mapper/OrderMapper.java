@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class OrderMapper {
     public OrderDTO orderToOrderDTO(Order order) {
         var dto = new OrderDTO();
-        dto.setUserAddress(order.getUserAddress());
+        dto.setUserId(order.getUserId());
         dto.setItems(order.getItems()
                 .entrySet()
                 .stream()
@@ -27,7 +27,7 @@ public class OrderMapper {
 
     public Order orderDTOToOrder(OrderDTO dto) {
         var order = new Order();
-        order.setUserAddress(dto.getUserAddress());
+        order.setUserId(dto.getUserId());
         order.setItems(new HashMap<>());
         if (dto.getItems() != null) {
             order.setItems(dto.getItems().stream().map(productInfoDTO ->

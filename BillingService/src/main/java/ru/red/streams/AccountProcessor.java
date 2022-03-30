@@ -16,7 +16,7 @@ import reactor.core.scheduler.Schedulers;
 import ru.red.auth.avro.UserCreated;
 import ru.red.auth.avro.UserDeleted;
 import ru.red.auth.avro.UserUpdatedEmail;
-import ru.red.dto.UserIdentityDTO;
+import ru.red.domain.UserBilling;
 import ru.red.service.UserBillingService;
 
 import java.util.Map;
@@ -67,14 +67,16 @@ public class AccountProcessor {
                         // Created
                         var userCreated = USER_CREATED_SERDE.deserializer()
                                 .deserialize(USER_MANIPULATION_TOPIC_NAME, bytes.get());
-                        var identityDTO = new UserIdentityDTO();
-                        identityDTO.setEmail(userCreated.getEmail().toString());
-                        billingService.create(identityDTO)
+                        var billing = new UserBilling();
+                        billing.setId(key);
+                        billing.setEmail(userCreated.getEmail().toString());
+                        billing.setNew(true);
+                        billingService.create(billing)
                                 .publishOn(Schedulers.boundedElastic())
                                 .doOnSuccess(s -> log.info("Processed UserCreated event [{}] {}",
                                         key, userCreated.getEmail()))
-                                .onErrorContinue((e, o) -> log.warn("Failed processing UserCreated event [{}] {}",
-                                        key, userCreated.getEmail()))
+                                .onErrorContinue((e, o) -> log.warn("Failed processing UserCreated event [{}] {} {}",
+                                        key, userCreated.getEmail(), e))
                                 .block();
                     } else if (genericRecord.getSchema().getFullName()
                             .equals(UserUpdatedEmail.getClassSchema().getFullName())) {

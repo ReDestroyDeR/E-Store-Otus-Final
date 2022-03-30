@@ -1,0 +1,6 @@
+{
+  "type": "record",
+  "name": "DeliveryStarted",
+  "namespace": "ru.red.delivery.avro",
+  "fields": []
+}

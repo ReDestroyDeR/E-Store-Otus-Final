@@ -1,0 +1,6 @@
+{
+  "type": "record",
+  "name": "DeliveryFinished",
+  "namespace": "ru.red.delivery.avro",
+  "fields": []
+}

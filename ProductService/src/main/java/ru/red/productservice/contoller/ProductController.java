@@ -39,6 +39,6 @@ public class ProductController {
 
     @GetMapping
     public Mono<Product> fetchByName(@RequestParam("name") String name) {
-        return Mono.just(stateService.getByNameWithoutComments(name));
+        return Mono.justOrEmpty(stateService.getByNameWithoutComments(name));
     }
 }

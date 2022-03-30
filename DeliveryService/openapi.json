@@ -1,0 +1,233 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Delivery Service",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Localhost deployment"
+    },
+    {
+      "url": "http://arch.homework",
+      "description": "Kubernetes deployment"
+    }
+  ],
+  "paths": {
+    "/api/delivery/start": {
+      "post": {
+        "tags": [
+          "delivery-controller"
+        ],
+        "operationId": "startDelivery",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delivery/end": {
+      "post": {
+        "tags": [
+          "delivery-controller"
+        ],
+        "operationId": "endDelivery",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delivery": {
+      "get": {
+        "tags": [
+          "delivery-controller"
+        ],
+        "operationId": "getStatus",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delivery/all": {
+      "get": {
+        "tags": [
+          "delivery-controller"
+        ],
+        "operationId": "getStatus_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressDTO": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "building": {
+            "type": "string"
+          },
+          "apartment": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeliveryDTO": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressDTO"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductInfoDTO"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "STARTED",
+              "FINISHED"
+            ]
+          }
+        }
+      },
+      "ProductInfoDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "units": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

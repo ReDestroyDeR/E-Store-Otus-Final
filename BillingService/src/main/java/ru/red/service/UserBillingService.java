@@ -5,6 +5,8 @@ import ru.red.domain.UserBilling;
 import ru.red.dto.UserIdentityDTO;
 
 public interface UserBillingService {
+    Mono<UserBilling> create(UserBilling domain);
+
     Mono<UserBilling> create(UserIdentityDTO dto);
 
     Mono<UserBilling> findById(Long id);
