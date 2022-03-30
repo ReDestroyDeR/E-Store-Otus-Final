@@ -11,4 +11,4 @@ ARG SPRING_GROUP=spring
 ARG SPRING_USER=spring
 RUN addgroup -S ${SPRING_GROUP} && adduser -S ${SPRING_USER} -G ${SPRING_GROUP}
 EXPOSE 8080
-ENTRYPOINT ["java", "-cp", ".:./lib/*", "ru.red.BillingServiceApplication", "--spring.profiles.active=cluster,kafka-streams"]
+ENTRYPOINT ["java", "-cp", ".:./lib/*", "ru.red.deliveryservice.DeliveryServiceApplication", "--spring.profiles.active=cluster,kafka-streams"]

@@ -14,7 +14,7 @@ spring:
 kafka:
   bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS}
   schemaRegistryUrl: ${KAFKA_SCHEMA_REGISTRY_URL}
-  applicationId: ${KAFKA_STREAMS_APPLICATION_ID}
+  applicationId: ${KAFKA_APPLICATION_ID}
 
 server:
   port: 8080

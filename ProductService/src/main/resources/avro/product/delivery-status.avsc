@@ -1,0 +1,10 @@
+{
+  "type": "enum",
+  "name": "DeliveryStatus",
+  "namespace": "ru.red.delivery.avro",
+  "symbols": [
+    "SCHEDULED",
+    "STARTED",
+    "FINISHED"
+  ]
+}

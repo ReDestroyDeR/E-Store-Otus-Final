@@ -4,4 +4,4 @@ mkdir -p target/dependency
 cd target/dependency
 jar -xf ../*.jar
 cd ../../
-docker build --tag redestroyder/billing-service:0.0.1 .
+docker build --tag redestroyder/billing-service:0.0.2 .
