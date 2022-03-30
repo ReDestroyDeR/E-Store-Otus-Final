@@ -10,6 +10,7 @@ helm repo update
 kubectl create -f configmap.yaml
 kubectl create -f secret.yaml
 
+kubectl create -f sa.yaml
 kubectl create -f deployment.yaml
 kubectl create -f svc.yaml
 

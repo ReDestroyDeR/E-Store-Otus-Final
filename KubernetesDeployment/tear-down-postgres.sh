@@ -1,2 +1,2 @@
 #!/bin/bash
-helm uninstall postgres --namespace stream-processing
+helm uninstall postgres --namespace final

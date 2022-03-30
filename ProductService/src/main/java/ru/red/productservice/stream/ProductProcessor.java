@@ -48,7 +48,7 @@ public class ProductProcessor {
     private static final Serde<GenericRecord> GENERIC_VALUE_SERDE = new GenericAvroSerde();
 
     private static final String TOPIC_NAME = "product-ops";
-    private static final String DELIVERY_AGGREGATE_CHANGELOG = "delivery-service-delivery-aggregate-store-changelog";
+    private static final String DELIVERY_AGGREGATE_CHANGELOG = "delivery-delivery-aggregate-store-changelog";
     private static final String STORE_NAME = "product-store";
 
     @Getter

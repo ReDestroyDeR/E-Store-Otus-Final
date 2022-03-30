@@ -1,0 +1,262 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:7008",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/product/comments": {
+      "put": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "putProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Comment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendResultCommentKeyCommentValue"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "subProduct_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentKeyDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendResultCommentKeyCommentValue"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/product/sub": {
+      "patch": {
+        "tags": [
+          "product-controller"
+        ],
+        "operationId": "subProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductSubtractionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/product/add": {
+      "patch": {
+        "tags": [
+          "product-controller"
+        ],
+        "operationId": "addProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductAdditionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/product": {
+      "get": {
+        "tags": [
+          "product-controller"
+        ],
+        "operationId": "fetchByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string"
+          },
+          "authorEmail": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "recommend": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProducerRecordCommentKeyCommentValue": {
+        "type": "object"
+      },
+      "RecordMetadata": {
+        "type": "object"
+      },
+      "SendResultCommentKeyCommentValue": {
+        "type": "object",
+        "properties": {
+          "producerRecord": {
+            "$ref": "#/components/schemas/ProducerRecordCommentKeyCommentValue"
+          },
+          "recordMetadata": {
+            "$ref": "#/components/schemas/RecordMetadata"
+          }
+        }
+      },
+      "ProductSubtractionDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "subtraction": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ProductAdditionDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "addition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pricePerUnit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pricePerUnit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        }
+      },
+      "CommentKeyDTO": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string"
+          },
+          "authorEmail": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -21,7 +21,7 @@ import java.util.Map;
 public class ProductTableProcessor {
     private static final Serde<ProductTableValue> PRODUCT_TABLE_VALUE_SERDE = new SpecificAvroSerde<>();
 
-    private static final String CHANGELOG_NAME = "product-service-product-store-changelog";
+    private static final String CHANGELOG_NAME = "product-product-store-changelog";
 
     private static final String STORE_NAME = "product-store";
 

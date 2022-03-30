@@ -1,8 +1,8 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: stream-processing-gateway
-  namespace: stream-processing
+  name: final-gateway
+  namespace: final
 
 spec:
   selector:

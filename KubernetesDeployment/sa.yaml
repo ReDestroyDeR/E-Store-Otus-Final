@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: BillingService
-  namespace: stream-processing
+  name: billing-service
+  namespace: final
   labels:
     app: billing
 automountServiceAccountToken: true
@@ -10,8 +10,8 @@ automountServiceAccountToken: true
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: OrderService
-  namespace: stream-processing
+  name: order-service
+  namespace: final
   labels:
     app: order
 automountServiceAccountToken: true
@@ -19,8 +19,35 @@ automountServiceAccountToken: true
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: NotificationService
-  namespace: stream-processing
+  name: notification-service
+  namespace: final
   labels:
     app: notification
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authentication-service
+  namespace: final
+  labels:
+    app: auth
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: product-service
+  namespace: final
+  labels:
+    app: product
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: delivery-service
+  namespace: final
+  labels:
+    app: delivery
 automountServiceAccountToken: true

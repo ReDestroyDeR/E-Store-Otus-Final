@@ -1,7 +1,7 @@
 # Run stage
 FROM eclipse-temurin:17.0.1_12-jre-alpine AS run
 WORKDIR /app
-
+RUN apk add --no-cache libstdc++
 # Copy files to main working dir
 COPY target/dependency/BOOT-INF/lib     /app/lib
 COPY target/dependency/META-INF         /app/META-INF
@@ -11,5 +11,5 @@ ARG SPRING_GROUP=spring
 ARG SPRING_USER=spring
 RUN addgroup -S ${SPRING_GROUP} && adduser -S ${SPRING_USER} -G ${SPRING_GROUP}
 EXPOSE 8080
-ENTRYPOINT ["java", "-cp", ".:./lib/*", "AuthenticationServiceApplication", "--spring.profiles.active=cluster,kafka-streams"]
+ENTRYPOINT ["java", "-cp", ".:./lib/*", "ru.red.authenticationservice.AuthenticationServiceApplication", "--spring.profiles.active=cluster,kafka-streams"]
 

@@ -1,13 +1,13 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: stream-processing-vs
-  namespace: stream-processing
+  name: final-vs
+  namespace: final
 spec:
   hosts:
     - arch.homework
   gateways:
-    - stream-processing-gateway
+    - final-gateway
   http:
     - name: "billing-routes"
       match:
@@ -15,15 +15,31 @@ spec:
             prefix: "/api/billing"
       route:
         - destination:
-            host: billing-service.stream-processing.svc.cluster.local
-            subset: v001
+            host: billing-service.final.svc.cluster.local
+            subset: v002
     - name: "order-routes"
       match:
         - uri:
             prefix: "/api/orders"
       route:
         - destination:
-            host: order-service.stream-processing.svc.cluster.local
+            host: order-service.final.svc.cluster.local
+            subset: v003
+    - name: "product-routes"
+      match:
+        - uri:
+            prefix: "/api/product"
+      route:
+        - destination:
+            host: product-service.final.svc.cluster.local
+            subset: v001
+    - name: "delivery-routes"
+      match:
+        - uri:
+            prefix: "/api/delivery"
+      route:
+        - destination:
+            host: delivery-service.final.svc.cluster.local
             subset: v001
     - name: "notification-routes"
       match:
@@ -31,5 +47,31 @@ spec:
             prefix: "/api/notifications"
       route:
         - destination:
-            host: notification-service.stream-processing.svc.cluster.local
-            subset: v001
+            host: notification-service.final.svc.cluster.local
+            subset: v002
+    - name: "auth-routes"
+      match:
+        - uri:
+            prefix: "/register"
+          method:
+            exact: "POST"
+        - uri:
+            prefix: "/login"
+          method:
+            exact: "POST"
+        - uri:
+            prefix: "/change-email"
+          method:
+            exact: "POST"
+        - uri:
+            prefix: "/change-password"
+          method:
+            exact: "POST"
+        - uri:
+            prefix: "/delete"
+          method:
+            exact: "DELETE"
+      route:
+        - destination:
+            host: authentication-service.final.svc.cluster.local
+            subset: v020

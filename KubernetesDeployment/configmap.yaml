@@ -1,42 +1,86 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: auth-configmap
+  namespace: final
+  labels:
+    app: auth
+data:
+  POSTGRES_URI: "postgres-postgresql.final.svc.red.kube"
+  POSTGRES_PORT: "5432"
+  JWT_CLAIMS_EXP_MINUTES: "30"
+  AUTH_SECURITY_SALT: "32"
+  AUTH_SECURITY_BCRYPT_STRENGTH: "10"
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"
+  KAFKA_STREAMS_APPLICATION_ID: "auth"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: billing-configmap
-  namespace: stream-processing
+  namespace: final
   labels:
     app: billing
 data:
-  POSTGRES_URI: "postgres-postgresql.stream-processing.svc.red.kube"
+  POSTGRES_URI: "postgres-postgresql.final.svc.red.kube"
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: "billing"
-  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.stream-processing.svc.red.kube:9092"
-  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.stream-processing.svc.red.kube:8081"
-  KAFKA_STREAMS_APPLICATION_ID: "billing"
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"
+  KAFKA_APPLICATION_ID: "billing"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: order-configmap
-  namespace: stream-processing
+  namespace: final
   labels:
     app: order
 data:
-  MONGO_HOST: "mongodb.stream-processing.svc.red.kube"
+  MONGO_HOST: "mongodb.final.svc.red.kube"
   MONGO_PORT: "27017"
   MONGO_DATABASE: "order"
-  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.stream-processing.svc.red.kube:9092"
-  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.stream-processing.svc.red.kube:8081"
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"
+  KAFKA_APPLICATION_ID: "order"
+  SERVICE_ORDER_IDEMPOTENCY_TTL: "5m"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delivery-configmap
+  namespace: final
+  labels:
+    app: delivery
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_APPLICATION_ID: "delivery"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-configmap
+  namespace: final
+  labels:
+    app: product
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_APPLICATION_ID: "product"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: notification-configmap
-  namespace: stream-processing
+  namespace: final
   labels:
     app: notification
 data:
-  MONGO_HOST: "mongodb.stream-processing.svc.red.kube"
+  MONGO_HOST: "mongodb.final.svc.red.kube"
   MONGO_PORT: "27017"
   MONGO_DATABASE: "notification"
-  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.stream-processing.svc.red.kube:9092"
-  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.stream-processing.svc.red.kube:8081"
+  KAFKA_BOOTSTRAP_SERVERS: "confluent-cp-kafka.final.svc.red.kube:9092"
+  KAFKA_APPLICATION_ID: "notification"
+  KAFKA_SCHEMA_REGISTRY_URL: "http://confluent-cp-schema-registry.final.svc.red.kube:8081"

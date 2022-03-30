@@ -1,2 +1,2 @@
 #!/bin/bash
-helm install mongodb bitnami/mongodb --namespace stream-processing --values mongo-values.yaml
+helm install mongodb bitnami/mongodb --namespace final --values mongo-values.yaml

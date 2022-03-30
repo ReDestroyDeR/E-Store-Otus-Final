@@ -3,8 +3,11 @@ primary:
     scripts:
       init.sql: |
         CREATE USER billing WITH PASSWORD 'billing'; 
+        CREATE USER authentication WITH PASSWORD 'authentication'; 
         CREATE DATABASE billing;
+        CREATE DATABASE authentication;
         GRANT ALL PRIVILEGES ON DATABASE billing TO billing;
+        GRANT ALL PRIVILEGES ON DATABASE authentication TO authentication;
 
   persistence:
     size: 3Gi

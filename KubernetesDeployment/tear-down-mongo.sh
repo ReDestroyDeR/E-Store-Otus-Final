@@ -1,2 +1,2 @@
 #!/bin/bash
-helm uninstall mongodb --namespace stream-processing
+helm uninstall mongodb --namespace final

@@ -1,2 +1,2 @@
 #!/bin/bash
-helm install postgres bitnami/postgresql --namespace stream-processing --values postgres-values.yaml
+helm install postgres bitnami/postgresql --namespace final --values postgres-values.yaml

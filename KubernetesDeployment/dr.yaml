@@ -2,9 +2,9 @@ apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: billing-dr
-  namespace: stream-processing
+  namespace: final
 spec:
-  host: billing-service.stream-processing.svc.cluster.local
+  host: billing-service.final.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -12,14 +12,19 @@ spec:
     - name: v001
       labels:
         version: 0.0.1
+    - name: v002
+      labels:
+        version: 0.0.2
+
 ---
+
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: order-dr
-  namespace: stream-processing
+  namespace: final
 spec:
-  host: order-service.stream-processing.svc.cluster.local
+  host: order-service.final.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -27,14 +32,76 @@ spec:
     - name: v001
       labels:
         version: 0.0.1
+    - name: v002
+      labels:
+        version: 0.0.2
+    - name: v003
+      labels:
+        version: 0.0.3
+
 ---
+
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: notification-dr
-  namespace: stream-processing
+  namespace: final
 spec:
-  host: notification-service.stream-processing.svc.cluster.local
+  host: notification-service.final.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v001
+      labels:
+        version: 0.0.1
+    - name: v002
+      labels:
+        version: 0.0.2
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: auth-dr
+  namespace: final
+spec:
+  host: authentication-service.final.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v020
+      labels:
+        version: 0.2.0
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: delivery-dr
+  namespace: final
+spec:
+  host: delivery-service.final.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v001
+      labels:
+        version: 0.0.1
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: product-dr
+  namespace: final
+spec:
+  host: product-service.final.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN

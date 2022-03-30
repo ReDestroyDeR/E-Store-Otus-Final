@@ -1,2 +1,2 @@
 #!/bin/bash
-helm uninstall confluent --namespace stream-processing
+helm uninstall confluent --namespace final
