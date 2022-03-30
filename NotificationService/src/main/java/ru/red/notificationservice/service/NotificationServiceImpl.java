@@ -30,8 +30,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Flux<Notification> fetchNotificationsByAddress(String address) {
-        return repository.findAllByUserAddress(address);
+    public Flux<Notification> fetchNotificationsByUserId(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
     @Override

@@ -20,3 +20,6 @@ service:
   order:
     idempotency:
       ttl: ${SERVICE_ORDER_IDEMPOTENCY_TTL:5m}
+
+server:
+  port: 8080

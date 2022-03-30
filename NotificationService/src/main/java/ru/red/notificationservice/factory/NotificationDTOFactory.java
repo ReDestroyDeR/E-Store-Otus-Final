@@ -33,9 +33,9 @@ public class NotificationDTOFactory {
 
     public NotificationDTO createDto(OrderAcknowledgmentKey key, OrderAcknowledged value) {
         var dto = new NotificationDTO();
-        dto.setUserAddress(key.getEmail().toString());
+        dto.setUserId(key.getUserId());
         dto.setContents(ackHtml.formatted(
-                        key.getEmail().toString().split("@")[0],
+                        key.getUserId(),
                         key.getOrderId(),
                         value.getTotalPrice(),
                         value.getUserBalance(),
@@ -48,9 +48,9 @@ public class NotificationDTOFactory {
 
     public NotificationDTO createDto(OrderAcknowledgmentKey key, OrderNotAcknowledged value) {
         var dto = new NotificationDTO();
-        dto.setUserAddress(key.getEmail().toString());
+        dto.setUserId(key.getUserId());
         dto.setContents(nackHtml.formatted(
-                        key.getEmail().toString().split("@")[0],
+                        key.getUserId(),
                         key.getOrderId(),
                         value.getTotalPrice(),
                         value.getUserBalance(),

@@ -18,13 +18,13 @@ public class NotificationUtil {
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
         notification.setContents(contents);
-        notification.setUserAddress(EmailUtil.generateRandomEmail());
+        notification.setUserId(random.nextLong(1, 1000));
         return notification;
     }
 
-    public static Notification createRandomWithAddress(String address) {
+    public static Notification createRandomWithAddress(Long userId) {
         var notification = createRandom();
-        notification.setUserAddress(address);
+        notification.setUserId(userId);
         return notification;
     }
 }

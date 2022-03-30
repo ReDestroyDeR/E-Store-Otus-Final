@@ -28,9 +28,9 @@ public class FetchController {
         return service.fetchNotificationById(id).as(this::validation);
     }
 
-    @GetMapping("/email/{email}")
-    public Flux<Notification> fetchNotificationsByAddress(@PathVariable("email") String address) {
-        return service.fetchNotificationsByAddress(address).as(this::validation);
+    @GetMapping("/userid/{userId}")
+    public Flux<Notification> fetchNotificationsByUserId(@PathVariable("userId") Long userId) {
+        return service.fetchNotificationsByUserId(userId).as(this::validation);
     }
 
     @GetMapping("/contents/{contents}")

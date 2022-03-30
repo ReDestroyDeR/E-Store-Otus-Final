@@ -17,6 +17,6 @@ public class Notification {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date timestamp;
 
-    private String userAddress;
+    private Long userId;
     private String contents;
 }

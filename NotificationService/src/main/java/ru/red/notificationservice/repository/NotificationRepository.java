@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import ru.red.notificationservice.domain.Notification;
 
 public interface NotificationRepository extends ReactiveMongoRepository<Notification, String> {
-    Flux<Notification> findAllByUserAddress(String userAddress);
+    Flux<Notification> findAllByUserId(Long userId);
 
     Flux<Notification> findAllByContentsContaining(String contents);
 }

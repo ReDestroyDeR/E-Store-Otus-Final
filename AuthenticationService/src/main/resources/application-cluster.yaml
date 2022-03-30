@@ -27,3 +27,7 @@ kafka:
   bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS}
   applicationId: ${KAFKA_APPLICATION_ID}
   schemaRegistryUrl: ${KAFKA_SCHEMA_REGISTRY_URL}
+
+server:
+  port: 8080
+

@@ -8,9 +8,10 @@ import ru.red.notificationservice.dto.NotificationDTO;
 public interface NotificationService {
     Mono<Notification> createNotification(NotificationDTO dto);
 
-    Flux<Notification> fetchNotificationsByAddress(String address);
+    Flux<Notification> fetchNotificationsByUserId(Long userId);
 
     Flux<Notification> fetchNotificationsContents(String contents);
 
     Mono<Notification> fetchNotificationById(String id);
+
 }

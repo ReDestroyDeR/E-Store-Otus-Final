@@ -60,12 +60,12 @@ public class OrderAcknowledgmentsProcessor {
                 .foreach(((key, bytes) -> {
                     var value = ORDER_ACKNOWLEDGED_SERDE.deserializer()
                             .deserialize(ACKNOWLEDGMENT_TOPIC, bytes.get());
-                    log.info("Got message: {} ACK", key.getEmail());
+                    log.info("Got message: {} ACK", key.getUserId());
                     service.createNotification(dtoFactory.createDto(key, value))
                             .publishOn(Schedulers.boundedElastic())
                             .subscribe(
-                                    s -> logOk(key.getEmail().toString(), "ACK"),
-                                    e -> logError(key.getEmail().toString(), "ACK", e));
+                                    s -> logOk(key.getUserId(), "ACK"),
+                                    e -> logError(key.getUserId(), "ACK", e));
                 }));
 
         // Not Acknowledged processing
@@ -77,20 +77,20 @@ public class OrderAcknowledgmentsProcessor {
                 .foreach(((key, bytes) -> {
                     var value = ORDER_NOT_ACKNOWLEDGED_SERDE.deserializer()
                             .deserialize(ACKNOWLEDGMENT_TOPIC, bytes.get());
-                    log.info("Got message: {} NACK", key.getEmail());
+                    log.info("Got message: {} NACK", key.getUserId());
                     service.createNotification(dtoFactory.createDto(key, value))
                             .publishOn(Schedulers.boundedElastic())
                             .subscribe(
-                                    s -> logOk(key.getEmail().toString(), "NACK"),
-                                    e -> logError(key.getEmail().toString(), "NACK", e));
+                                    s -> logOk(key.getUserId(), "NACK"),
+                                    e -> logError(key.getUserId(), "NACK", e));
                 }));
     }
 
-    private void logOk(String email, String event) {
-        log.info("Successfully created notification for {} {}", email, event);
+    private void logOk(Long userId, String event) {
+        log.info("Successfully created notification for {} {}", userId, event);
     }
 
-    private void logError(String email, String event, Throwable error) {
-        log.warn("Failed creating notification for {} {} {}", email, event, error.getMessage());
+    private void logError(Long userId, String event, Throwable error) {
+        log.warn("Failed creating notification for {} {} {}", userId, event, error.getMessage());
     }
 }

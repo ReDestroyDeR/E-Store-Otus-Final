@@ -40,7 +40,7 @@ class NotificationServiceImplTest {
         var dto = mapper.notificationToNotificationDTO(notification);
         StepVerifier.create(service.createNotification(dto))
                 .expectNextMatches(n -> n.getTimestamp().equals(notification.getTimestamp()) &&
-                        n.getUserAddress().equals(notification.getUserAddress()) &&
+                        n.getUserId().equals(notification.getUserId()) &&
                         n.getContents().equals(notification.getContents()))
                 .expectComplete()
                 .verify();
@@ -53,10 +53,10 @@ class NotificationServiceImplTest {
                 .flatMap(service::createNotification);
     }
 
-    private Flux<Notification> createNotifications(int count, String address) {
+    private Flux<Notification> createNotifications(int count, Long userId) {
         return Flux.generate(sink -> sink.next(
                                 mapper.notificationToNotificationDTO(
-                                        NotificationUtil.createRandomWithAddress(address)
+                                        NotificationUtil.createRandomWithAddress(userId)
                                 )
                         )
                 )
@@ -68,19 +68,19 @@ class NotificationServiceImplTest {
     @Test
     void fetchNotificationsByAddress() {
         var count = 10;
-        var email = "test@example.org"; // Using .org since util uses .com
+        var userId = 50L; // Using .org since util uses .com
         StepVerifier.create(createNotifications(count))
                 .expectNextCount(count)
                 .expectComplete()
                 .verify();
 
-        var notifications = createNotifications(count / 2, email).cache(count);
+        var notifications = createNotifications(count / 2, userId).cache(count);
         StepVerifier.create(notifications)
                 .expectNextCount(count / 2)
                 .expectComplete()
                 .verify();
 
-        StepVerifier.create(service.fetchNotificationsByAddress(email))
+        StepVerifier.create(service.fetchNotificationsByUserId(userId))
                 .expectNextMatches(n -> Boolean.TRUE.equals(
                         notifications.any(notification -> notification.equals(n)).block()))
                 .expectNextCount(count / 2 - 1)

@@ -9,6 +9,6 @@ import java.util.Date;
 public class NotificationDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date timestamp;
-    private String userAddress;
+    private Long userId;
     private String contents;
 }

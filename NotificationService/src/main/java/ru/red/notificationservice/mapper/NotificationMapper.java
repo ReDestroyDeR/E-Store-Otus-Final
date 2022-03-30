@@ -9,7 +9,7 @@ public class NotificationMapper {
     public NotificationDTO notificationToNotificationDTO(Notification notification) {
         var dto = new NotificationDTO();
         dto.setTimestamp(notification.getTimestamp());
-        dto.setUserAddress(notification.getUserAddress());
+        dto.setUserId(notification.getUserId());
         dto.setContents(notification.getContents());
         return dto;
     }
@@ -17,7 +17,7 @@ public class NotificationMapper {
     public Notification notificationDTOToNotification(NotificationDTO dto) {
         var notification = new Notification();
         notification.setTimestamp(dto.getTimestamp());
-        notification.setUserAddress(dto.getUserAddress());
+        notification.setUserId(dto.getUserId());
         notification.setContents(dto.getContents());
         return notification;
     }

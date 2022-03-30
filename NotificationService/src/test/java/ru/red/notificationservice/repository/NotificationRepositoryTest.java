@@ -38,7 +38,7 @@ class NotificationRepositoryTest {
                 .verify();
 
         assert notification.equals(repository
-                .findAllByUserAddress(notification.getUserAddress())
+                .findAllByUserId(notification.getUserId())
                 .blockFirst());
     }
 }
