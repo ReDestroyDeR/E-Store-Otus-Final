@@ -13,8 +13,11 @@ Functionality: Authentication, Billing, Warehouse tracking, Order placement, Not
 The system is based fully on Event Sourcing and Reactiveness. I chose Kafka as a Message broker and Project Reactor as reactive extensions provider for Java
 
 GraphQL API wasn't implemented and Product Aggregate doesn't fully work. There is also a big flaw in the processing of changes to the warehouse
+
 Notifications are implemented just by writing into MongoDB
+
 Authentication uses JWT. Refresh tokens weren't implemented
+
 Authorization was to be processed on the Infrastracture level using Envoy Proxies and examining of the contents of the provided JWT
 
 Result of the event storm:
