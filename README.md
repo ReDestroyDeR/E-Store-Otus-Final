@@ -75,7 +75,7 @@ helm install istio-ingress istio/gateway -n istio-ingress --wait
 
 ### IntelliJ Idea
 
-0. `git clone https://github.com/ReDestroyDeR/StreamProcessing`
+0. `git clone https://github.com/ReDestroyDeR/E-Store-Otus-Final`
 1. Start all the dependencies via `docker-compose up -d`
 2. Open `StreamProcessing` in IntelliJ as Project
 3. (Optional) If modules haven't been detected automatically you need to:
