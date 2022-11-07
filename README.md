@@ -1,6 +1,6 @@
 # Otus Final Project
 
-To be honest, codebases requires refactoring due to problems in core functionality and architecture
+To be honest, codebase requires refactoring due to problems in core functionality and architecture
 If you're going to review this distributed ball of mud, I sincerily apologize, It has been made in 8 days from Pre-Existing Services that I had written as part of previous homeworks in the Otus Microservice Course
 
 ### Description
