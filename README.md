@@ -1,10 +1,28 @@
 # Otus Final Project
 
-Otus Final Project...
-
-***Description TBD***
 To be honest, codebases requires refactoring due to problems in core functionality and architecture
 If you're going to review this distributed ball of mud, I sincerily apologize, It has been made in 8 days from Pre-Existing Services that I had written as part of previous homeworks in the Otus Microservice Course
+
+### Description
+
+This is my final project for Otus Microservice architecture course
+Theme: E-Store
+
+Functionality: Authentication, Billing, Warehouse tracking, Order placement, Notifications and Delivery
+
+The system is based fully on Event Sourcing and Reactiveness. I chose Kafka as a Message broker and Project Reactor as reactive extensions provider for Java
+
+GraphQL API wasn't implemented and Product Aggregate doesn't fully work. There is also a big flaw in the processing of changes to the warehouse
+Notifications are implemented just by writing into MongoDB
+Authentication uses JWT. Refresh tokens weren't implemented
+Authorization was to be processed on the Infrastracture level using Envoy Proxies and examining of the contents of the provided JWT
+
+Result of the event storm:
+![Event Schema](https://user-images.githubusercontent.com/24751213/200408802-2fdd265c-1477-47bd-99da-0f78f56a7180.png)
+
+Final architecture:
+![Architecture](https://user-images.githubusercontent.com/24751213/200408939-027c48e0-5983-4f34-8871-0085a27e3f99.png)
+
 
 ### Kubernetes Deployment
 
@@ -34,7 +52,7 @@ helm install istio-ingress istio/gateway -n istio-ingress --wait
 ```
 
 3. Run `bootstrap.sh` in KubernetesDeployment folder. It will install everything needed into newly created
-   namespace `stream-processing`
+   namespace `final`
 
 #### Uninstall:
 
