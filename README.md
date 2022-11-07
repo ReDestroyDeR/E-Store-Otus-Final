@@ -8,9 +8,18 @@ If you're going to review this distributed ball of mud, I sincerily apologize, I
 This is my final project for Otus Microservice architecture course
 Theme: E-Store
 
-Functionality: Authentication, Billing, Warehouse tracking, Order placement, Notifications and Delivery
+
+Functionality: 
++ Authentication
++ Billing
++ Warehouse tracking
++ Order placement
++ Notifications
++ Delivery
+
 
 The system is based fully on Event Sourcing and Reactiveness. I chose Kafka as a Message broker and Project Reactor as reactive extensions provider for Java
+
 
 GraphQL API wasn't implemented and Product Aggregate doesn't fully work. There is also a big flaw in the processing of changes to the warehouse
 
